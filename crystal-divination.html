@@ -1,0 +1,1631 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>晶缘 | 今日水晶</title>
+  <style>
+    :root {
+      --bg: #edf3f7;
+      --surface: #f5f8fb;
+      --surface-soft: #e8eff5;
+      --ink: #263044;
+      --muted: #64748b;
+      --accent: #86a9bd;
+      --sage: #a8c9b6;
+      --peach: #efc3a5;
+      --line: rgba(82, 103, 122, .16);
+      --light: rgba(255, 255, 255, .92);
+      --shade: rgba(122, 143, 163, .26);
+      --shadow: 18px 20px 42px var(--shade), -16px -16px 34px var(--light);
+      --shadow-sm: 9px 10px 22px rgba(122, 143, 163, .2), -8px -8px 18px rgba(255, 255, 255, .86);
+      --inset: inset 8px 8px 16px rgba(122, 143, 163, .18), inset -8px -8px 16px rgba(255, 255, 255, .85);
+      --radius: 32px;
+      --ease: cubic-bezier(.2, .8, .2, 1);
+    }
+
+    * { box-sizing: border-box; }
+
+    html { min-height: 100%; background: var(--bg); }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 12% 88%, rgba(168, 201, 182, .28), transparent 30rem),
+        radial-gradient(circle at 88% 20%, rgba(239, 195, 165, .22), transparent 28rem),
+        var(--bg);
+      font-family: "Segoe UI", "PingFang SC", "Noto Sans SC", "Microsoft YaHei UI", "Microsoft YaHei", Arial, sans-serif;
+      font-size: 16px;
+      letter-spacing: 0;
+    }
+
+    button,
+    select { font: inherit; }
+
+    button { touch-action: manipulation; }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    .app {
+      width: min(100%, 1280px);
+      min-height: 100dvh;
+      margin: 0 auto;
+      padding: 22px clamp(14px, 3vw, 34px) 34px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      min-height: 64px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: var(--ink);
+      text-decoration: none;
+      font-weight: 850;
+      font-size: 22px;
+    }
+
+    .brand-mark,
+    .round-icon {
+      display: inline-grid;
+      place-items: center;
+      color: #fff;
+      background: var(--accent);
+      border-radius: 20px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .brand-mark {
+      width: 48px;
+      height: 48px;
+    }
+
+    .brand svg,
+    .icon {
+      width: 22px;
+      height: 22px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 1.9;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .top-note {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 46px;
+      padding: 0 16px;
+      color: var(--muted);
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      box-shadow: var(--shadow-sm);
+      font-size: 14px;
+      font-weight: 750;
+    }
+
+    .workspace {
+      display: grid;
+      grid-template-columns: minmax(360px, 1.06fr) minmax(360px, .94fr);
+      gap: clamp(24px, 5vw, 68px);
+      align-items: center;
+      min-height: calc(100dvh - 88px);
+      padding: clamp(14px, 4vw, 52px) 0 22px;
+    }
+
+    .panel {
+      position: relative;
+      background: rgba(237, 243, 247, .96);
+      border: 1px solid rgba(255, 255, 255, .72);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .input-panel {
+      padding: clamp(22px, 4vw, 42px);
+    }
+
+    .intro-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      min-height: 42px;
+      margin-bottom: 24px;
+      padding: 0 16px;
+      color: #5f7f92;
+      background: var(--surface);
+      border: 1px solid rgba(255, 255, 255, .72);
+      border-radius: 999px;
+      box-shadow: var(--shadow-sm);
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    h1 {
+      margin: 0;
+      color: var(--ink);
+      font-size: clamp(44px, 7vw, 78px);
+      font-weight: 850;
+      line-height: 1.02;
+      letter-spacing: 0;
+    }
+
+    .headline-soft {
+      display: block;
+      color: var(--accent);
+      text-shadow: 1px 1px 0 rgba(255, 255, 255, .75);
+    }
+
+    .subhead {
+      max-width: 35rem;
+      margin: 20px 0 30px;
+      color: var(--muted);
+      font-size: 17px;
+      line-height: 1.82;
+      font-weight: 500;
+    }
+
+    .form {
+      display: grid;
+      gap: 18px;
+    }
+
+    .field {
+      display: grid;
+      gap: 12px;
+      padding: 16px;
+      background: rgba(245, 248, 251, .58);
+      border: 1px solid rgba(255, 255, 255, .72);
+      border-radius: 24px;
+      box-shadow: var(--inset);
+    }
+
+    .field-label,
+    .field-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 0;
+      color: var(--ink);
+      font-size: 15px;
+      font-weight: 850;
+    }
+
+    .label-icon {
+      display: inline-grid;
+      place-items: center;
+      width: 34px;
+      height: 34px;
+      color: #5f7f92;
+      background: var(--surface);
+      border-radius: 14px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .label-icon .icon {
+      width: 19px;
+      height: 19px;
+    }
+
+    .date-grid {
+      display: grid;
+      grid-template-columns: 1.35fr 1fr 1fr;
+      gap: 12px;
+    }
+
+    .select-wrap {
+      position: relative;
+    }
+
+    .select-wrap::after {
+      position: absolute;
+      top: 50%;
+      right: 16px;
+      width: 8px;
+      height: 8px;
+      content: "";
+      border-right: 2px solid var(--accent);
+      border-bottom: 2px solid var(--accent);
+      transform: translateY(-62%) rotate(45deg);
+      pointer-events: none;
+    }
+
+    select {
+      width: 100%;
+      min-height: 58px;
+      padding: 0 42px 0 16px;
+      color: var(--ink);
+      background: var(--surface);
+      border: 1px solid rgba(255, 255, 255, .78);
+      border-radius: 18px;
+      box-shadow: var(--shadow-sm);
+      outline: none;
+      appearance: none;
+      font-weight: 800;
+    }
+
+    .themes {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .chip {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 8px;
+      align-items: center;
+      justify-content: center;
+      min-height: 54px;
+      padding: 0 12px;
+      color: var(--muted);
+      background: var(--surface);
+      border: 1px solid rgba(255, 255, 255, .78);
+      border-radius: 18px;
+      box-shadow: var(--shadow-sm);
+      cursor: pointer;
+      font-weight: 850;
+      transition: transform .18s var(--ease), box-shadow .18s ease, color .18s ease, background .18s ease;
+    }
+
+    .chip .icon {
+      width: 18px;
+      height: 18px;
+    }
+
+    .chip:hover {
+      transform: translateY(-1px);
+    }
+
+    .chip[aria-pressed="true"] {
+      color: #fff;
+      background: var(--accent);
+      box-shadow: 7px 8px 18px rgba(83, 118, 138, .28), -6px -6px 16px rgba(255, 255, 255, .74);
+    }
+
+    .hint {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.7;
+      font-weight: 550;
+    }
+
+    .submit-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 14px;
+      align-items: center;
+      margin-top: 4px;
+    }
+
+    .submit {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      min-height: 62px;
+      padding: 0 24px;
+      color: #fff;
+      background: var(--accent);
+      border: 0;
+      border-radius: 20px;
+      box-shadow: 11px 12px 24px rgba(83, 118, 138, .34), -10px -10px 22px rgba(255, 255, 255, .82);
+      cursor: pointer;
+      font-weight: 900;
+      transition: transform .18s var(--ease), box-shadow .18s ease;
+    }
+
+    .submit:hover {
+      transform: translateY(-1px);
+      box-shadow: 13px 14px 28px rgba(83, 118, 138, .36), -10px -10px 22px rgba(255, 255, 255, .86);
+    }
+
+    .submit:disabled {
+      cursor: wait;
+      opacity: .78;
+      transform: none;
+    }
+
+    .reset {
+      min-height: 52px;
+      padding: 0 18px;
+      color: var(--muted);
+      background: var(--surface);
+      border: 1px solid rgba(255, 255, 255, .78);
+      border-radius: 18px;
+      box-shadow: var(--shadow-sm);
+      cursor: pointer;
+      font-weight: 850;
+    }
+
+    select:focus-visible,
+    .chip:focus-visible,
+    .submit:focus-visible,
+    .reset:focus-visible,
+    .analysis-toggle:focus-visible,
+    .energy-toggle:focus-visible,
+    .carousel-arrow:focus-visible {
+      outline: 3px solid rgba(134, 169, 189, .38);
+      outline-offset: 3px;
+    }
+
+    .trust-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px 22px;
+      margin-top: 28px;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .trust-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .trust-item .icon {
+      width: 18px;
+      height: 18px;
+      color: var(--sage);
+      stroke-width: 2.4;
+    }
+
+    .result-panel {
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr);
+      justify-self: center;
+      width: min(100%, 590px);
+      height: clamp(650px, calc(100dvh - 136px), 760px);
+      min-height: 0;
+      padding: clamp(16px, 2.6vw, 24px);
+      overflow: hidden;
+    }
+
+    .result-panel::before {
+      position: absolute;
+      right: -80px;
+      bottom: -90px;
+      width: 260px;
+      height: 260px;
+      content: "";
+      background: rgba(168, 201, 182, .26);
+      border-radius: 999px;
+      filter: blur(2px);
+      pointer-events: none;
+    }
+
+    .result-head {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 14px;
+    }
+
+    .result-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 0;
+      font-size: 19px;
+      font-weight: 900;
+    }
+
+    .round-icon {
+      width: 42px;
+      height: 42px;
+      color: #fff;
+      border-radius: 17px;
+    }
+
+    .ethical-pill {
+      min-height: 38px;
+      padding: 0 13px;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      color: var(--muted);
+      background: var(--surface);
+      border: 1px solid rgba(255, 255, 255, .72);
+      border-radius: 999px;
+      box-shadow: var(--shadow-sm);
+      font-size: 13px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .result-body {
+      position: relative;
+      z-index: 1;
+      min-height: 0;
+      height: 100%;
+      display: grid;
+      overflow: hidden;
+    }
+
+    .empty-state,
+    .loading-state {
+      display: grid;
+      align-content: center;
+      gap: 22px;
+      min-height: 0;
+      height: 100%;
+      padding: 14px;
+    }
+
+    .empty-card,
+    .loading-card,
+    .recommend-card,
+    .alt-card {
+      background: rgba(245, 248, 251, .68);
+      border: 1px solid rgba(255, 255, 255, .78);
+      border-radius: 28px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .empty-card {
+      display: grid;
+      justify-items: center;
+      gap: 16px;
+      height: 100%;
+      padding: clamp(28px, 5vw, 48px);
+      text-align: center;
+      align-content: center;
+    }
+
+    .empty-orb {
+      display: grid;
+      place-items: center;
+      width: 116px;
+      height: 116px;
+      color: var(--accent);
+      background: var(--surface-soft);
+      border-radius: 36px;
+      box-shadow: var(--inset);
+    }
+
+    .empty-orb .icon {
+      width: 54px;
+      height: 54px;
+      stroke-width: 1.5;
+    }
+
+    .empty-card h2,
+    .loading-card h2 {
+      margin: 0;
+      font-size: clamp(26px, 4vw, 38px);
+      line-height: 1.18;
+    }
+
+    .empty-card p,
+    .loading-card p {
+      max-width: 34rem;
+      margin: 0;
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.75;
+      font-weight: 560;
+    }
+
+    .loading-card {
+      display: grid;
+      gap: 24px;
+      align-content: center;
+      height: 100%;
+      min-height: 0;
+      padding: clamp(22px, 4vw, 40px);
+    }
+
+    .loading-top {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 18px;
+      align-items: center;
+    }
+
+    .pulse-gem {
+      display: grid;
+      place-items: center;
+      width: 76px;
+      height: 76px;
+      color: var(--accent);
+      background: var(--surface-soft);
+      border-radius: 26px;
+      box-shadow: var(--inset);
+      animation: breathe 1.9s var(--ease) infinite;
+    }
+
+    .pulse-gem .icon {
+      width: 36px;
+      height: 36px;
+    }
+
+    @keyframes breathe {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.045); }
+    }
+
+    .progress-box {
+      display: grid;
+      gap: 10px;
+      padding: 18px;
+      background: var(--surface-soft);
+      border-radius: 22px;
+      box-shadow: var(--inset);
+    }
+
+    .progress-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      color: var(--ink);
+      font-size: 14px;
+      font-weight: 850;
+    }
+
+    .progress-track {
+      height: 14px;
+      overflow: hidden;
+      background: rgba(255, 255, 255, .5);
+      border-radius: 999px;
+      box-shadow: var(--inset);
+    }
+
+    .progress-bar {
+      width: 0%;
+      height: 100%;
+      background: var(--accent);
+      border-radius: inherit;
+      transition: width .28s var(--ease);
+    }
+
+    .stage-list {
+      display: grid;
+      gap: 9px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .stage-list li {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-height: 34px;
+      padding: 0 12px;
+      color: var(--muted);
+      background: rgba(255, 255, 255, .46);
+      border-radius: 14px;
+      font-size: 14px;
+      font-weight: 750;
+      opacity: .58;
+    }
+
+    .stage-list li.is-active {
+      color: var(--ink);
+      opacity: 1;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .stage-dot {
+      width: 8px;
+      height: 8px;
+      background: var(--sage);
+      border-radius: 50%;
+    }
+
+    .recommend-wrap {
+      display: grid;
+      gap: 16px;
+    }
+
+    .recommend-card {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      overflow: hidden;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      scrollbar-width: thin;
+    }
+
+    .carousel-shell {
+      display: grid;
+      grid-template-rows: minmax(0, 1fr) auto auto;
+      gap: 14px;
+      height: 100%;
+      min-height: 0;
+    }
+
+    .carousel-frame {
+      position: relative;
+      overflow: hidden;
+      border-radius: 28px;
+      min-height: 0;
+      height: 100%;
+    }
+
+    .carousel-track {
+      display: flex;
+      align-items: stretch;
+      height: 100%;
+      transform: translateX(0);
+      transition: transform .42s var(--ease);
+      will-change: transform;
+    }
+
+    .carousel-slide {
+      flex: 0 0 100%;
+      min-width: 100%;
+      min-height: 0;
+      height: 100%;
+      padding: 0 2px 2px;
+    }
+
+    .carousel-nav {
+      display: grid;
+      grid-template-columns: 58px 1fr 58px;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .carousel-arrow {
+      display: inline-grid;
+      place-items: center;
+      width: 54px;
+      height: 54px;
+      color: var(--accent);
+      background: var(--surface);
+      border: 1px solid rgba(255, 255, 255, .78);
+      border-radius: 20px;
+      box-shadow: var(--shadow-sm);
+      cursor: pointer;
+      transition: transform .18s var(--ease), box-shadow .18s ease;
+    }
+
+    .carousel-arrow:hover {
+      transform: translateY(-1px);
+    }
+
+    .carousel-arrow.is-hidden {
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .carousel-status {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      min-height: 54px;
+      padding: 0 14px;
+      color: var(--muted);
+      background: rgba(245, 248, 251, .62);
+      border: 1px solid rgba(255, 255, 255, .72);
+      border-radius: 20px;
+      box-shadow: var(--inset);
+      font-size: 14px;
+      font-weight: 850;
+    }
+
+    .carousel-dots {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .carousel-dot {
+      width: 9px;
+      height: 9px;
+      background: rgba(100, 116, 139, .28);
+      border-radius: 50%;
+    }
+
+    .carousel-dot.is-active {
+      width: 24px;
+      background: var(--accent);
+      border-radius: 999px;
+    }
+
+    .recommend-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 14px 16px 0;
+    }
+
+    .recommend-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 38px;
+      padding: 0 14px;
+      color: #fff;
+      background: var(--accent);
+      border-radius: 999px;
+      box-shadow: 7px 8px 18px rgba(83, 118, 138, .24);
+      font-size: 14px;
+      font-weight: 900;
+    }
+
+    .score-bubble {
+      display: grid;
+      place-items: center;
+      min-width: 68px;
+      min-height: 48px;
+      color: var(--ink);
+      background: var(--surface);
+      border-radius: 20px;
+      box-shadow: var(--shadow-sm);
+      font-weight: 950;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .score-bubble small {
+      display: block;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .crystal-photo {
+      display: block;
+      width: calc(100% - 32px);
+      aspect-ratio: 1.68;
+      max-height: clamp(190px, 30dvh, 235px);
+      margin: 14px auto 0;
+      object-fit: cover;
+      object-position: center;
+      border-radius: 24px;
+      box-shadow: var(--inset);
+    }
+
+    .hero-copy {
+      padding: 16px 18px 4px;
+      text-align: center;
+    }
+
+    .hero-copy h2 {
+      margin: 0;
+      font-size: clamp(26px, 3vw, 36px);
+      line-height: 1.14;
+      font-weight: 900;
+    }
+
+    .hero-copy p {
+      max-width: 38rem;
+      margin: 8px auto 0;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.62;
+      font-weight: 560;
+    }
+
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+      padding: 12px 16px 10px;
+    }
+
+    .metric {
+      min-height: 82px;
+      padding: 10px 8px;
+      background: var(--surface);
+      border: 1px solid rgba(255, 255, 255, .76);
+      border-radius: 20px;
+      box-shadow: var(--shadow-sm);
+      text-align: center;
+    }
+
+    .metric .icon {
+      width: 19px;
+      height: 19px;
+      margin-bottom: 5px;
+      color: var(--accent);
+    }
+
+    .metric b {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    .metric span {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.35;
+      font-weight: 760;
+    }
+
+    .metric .big {
+      color: var(--ink);
+      font-size: 23px;
+      font-weight: 950;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .lucky-dot {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      margin-right: 6px;
+      background: var(--lucky-color);
+      border: 2px solid rgba(38, 48, 68, .16);
+      border-radius: 50%;
+      vertical-align: -2px;
+    }
+
+    .analysis-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 42px;
+      margin: 0 auto 12px;
+      padding: 0 18px;
+      color: #5f7f92;
+      background: transparent;
+      border: 0;
+      cursor: pointer;
+      font-weight: 900;
+    }
+
+    .analysis-panel {
+      display: none;
+      margin: 0 16px 16px;
+      padding: 18px 20px;
+      overflow: visible;
+      scroll-margin-block: 18px;
+      color: var(--muted);
+      background: var(--surface-soft);
+      border-radius: 22px;
+      box-shadow: var(--inset);
+      font-size: 15px;
+      line-height: 1.84;
+    }
+
+    .analysis-panel.is-open { display: block; }
+    .analysis-panel strong { color: var(--ink); }
+
+    .alt-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .alt-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin: 2px 2px 0;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 900;
+    }
+
+    .alt-card {
+      display: grid;
+      grid-template-columns: 88px 1fr auto;
+      gap: 13px;
+      align-items: center;
+      padding: 12px;
+    }
+
+    .alt-card img {
+      width: 88px;
+      height: 70px;
+      object-fit: cover;
+      border-radius: 18px;
+      box-shadow: var(--inset);
+    }
+
+    .alt-card h3 {
+      margin: 0 0 5px;
+      font-size: 18px;
+      line-height: 1.2;
+    }
+
+    .alt-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.55;
+      font-weight: 560;
+    }
+
+    .alt-score {
+      color: var(--ink);
+      font-size: 22px;
+      font-weight: 950;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .fine-print {
+      margin: 12px 2px 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.65;
+      font-weight: 620;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: .01ms !important;
+      }
+    }
+
+    @media (max-width: 960px) {
+      .workspace {
+        grid-template-columns: 1fr;
+        min-height: auto;
+        padding-top: 18px;
+      }
+
+      .result-panel {
+        width: 100%;
+        height: min(720px, calc(100dvh - 40px));
+      }
+      .result-body,
+      .empty-state,
+      .loading-state { min-height: 0; }
+    }
+
+    @media (max-width: 680px) {
+      .app { padding: 14px 12px 22px; }
+      .topbar { align-items: flex-start; }
+      .brand { font-size: 19px; }
+      .brand-mark { width: 44px; height: 44px; border-radius: 17px; }
+      .top-note { display: none; }
+      .input-panel,
+      .result-panel { padding: 18px; border-radius: 26px; }
+      h1 { font-size: 42px; }
+      .subhead { margin-bottom: 22px; font-size: 16px; line-height: 1.7; }
+      .date-grid { grid-template-columns: 1fr; }
+      .themes { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .chip:last-child { grid-column: 1 / -1; }
+      .submit-row { grid-template-columns: 1fr; }
+      .reset { width: 100%; }
+      .result-head { align-items: flex-start; }
+      .ethical-pill { white-space: normal; text-align: center; }
+      .loading-top { grid-template-columns: 1fr; justify-items: center; text-align: center; }
+      .result-panel { height: 640px; }
+      .crystal-photo { width: calc(100% - 24px); max-height: 168px; border-radius: 20px; }
+      .metric-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); padding: 14px 12px 12px; }
+      .metric { min-height: 84px; }
+      .carousel-nav { grid-template-columns: 50px 1fr 50px; gap: 8px; }
+      .carousel-arrow { width: 48px; height: 48px; border-radius: 18px; }
+      .carousel-status { min-height: 48px; gap: 10px; padding: 0 10px; }
+      .analysis-panel { margin: 0 12px 14px; padding: 15px; font-size: 14px; }
+      .alt-card { grid-template-columns: 78px 1fr; }
+      .alt-card img { width: 78px; height: 64px; }
+      .alt-score { grid-column: 1 / -1; justify-self: end; }
+    }
+
+    @media (max-width: 390px) {
+      .metric-grid { gap: 8px; }
+      .metric { padding: 11px 7px; }
+      .metric b { font-size: 13px; }
+      .metric span { font-size: 13px; }
+      .metric .big { font-size: 21px; }
+      .hero-copy h2 { font-size: 27px; }
+    }
+  </style>
+</head>
+<body>
+  <svg aria-hidden="true" width="0" height="0" style="position:absolute">
+    <symbol id="icon-logo" viewBox="0 0 24 24">
+      <path d="M6.2 4.8h11.6l2.2 4.1-8 10.3-8-10.3 2.2-4.1Z"></path>
+      <path d="M4 8.9h16"></path>
+      <path d="M9 4.8 7.8 8.9 12 19.2l4.2-10.3L15 4.8"></path>
+    </symbol>
+    <symbol id="icon-calendar" viewBox="0 0 24 24">
+      <path d="M7 3.8v3"></path><path d="M17 3.8v3"></path>
+      <path d="M5.5 5.7h13A2.5 2.5 0 0 1 21 8.2v11A2.5 2.5 0 0 1 18.5 21h-13A2.5 2.5 0 0 1 3 19.2v-11a2.5 2.5 0 0 1 2.5-2.5Z"></path>
+      <path d="M3.5 10h17"></path><path d="M8 14h.01"></path><path d="M12 14h.01"></path><path d="M16 14h.01"></path>
+    </symbol>
+    <symbol id="icon-spark" viewBox="0 0 24 24">
+      <path d="M12 3.5 14.2 9l5.3 2.2-5.3 2.2L12 19l-2.2-5.6-5.3-2.2L9.8 9 12 3.5Z"></path>
+      <path d="M19 3.8v3.4"></path><path d="M20.7 5.5h-3.4"></path>
+    </symbol>
+    <symbol id="icon-coin" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="8.5"></circle><path d="M12 7.5v9"></path><path d="M15.2 9.4c-.8-.8-2.1-1.1-3.2-.9-1.3.2-2.2.9-2.2 2 0 2.8 5.2 1.2 5.2 4 0 1.2-1.1 2-2.7 2.1-1.4.1-2.7-.3-3.6-1.1"></path>
+    </symbol>
+    <symbol id="icon-book" viewBox="0 0 24 24">
+      <path d="M5 5.5A2.5 2.5 0 0 1 7.5 3H20v16H7.5A2.5 2.5 0 0 0 5 21V5.5Z"></path>
+      <path d="M5 5.5A2.5 2.5 0 0 0 2.5 3H2v16h.5A2.5 2.5 0 0 1 5 21"></path>
+      <path d="M8.5 7H16"></path><path d="M8.5 10.5H15"></path>
+    </symbol>
+    <symbol id="icon-heart" viewBox="0 0 24 24">
+      <path d="M20.2 6.2a5 5 0 0 0-7.1 0L12 7.3l-1.1-1.1a5 5 0 1 0-7.1 7.1L12 21l8.2-7.7a5 5 0 0 0 0-7.1Z"></path>
+    </symbol>
+    <symbol id="icon-shield" viewBox="0 0 24 24">
+      <path d="M12 3.5 19 6v5.3c0 4.2-2.7 7.9-7 9.7-4.3-1.8-7-5.5-7-9.7V6l7-2.5Z"></path>
+      <path d="m8.5 12 2.3 2.3 4.8-5"></path>
+    </symbol>
+    <symbol id="icon-briefcase" viewBox="0 0 24 24">
+      <path d="M8.5 7V5.8A2.3 2.3 0 0 1 10.8 3.5h2.4a2.3 2.3 0 0 1 2.3 2.3V7"></path>
+      <path d="M4.8 7h14.4A2.8 2.8 0 0 1 22 9.8v9A2.8 2.8 0 0 1 19.2 21H4.8A2.8 2.8 0 0 1 2 18.8v-9A2.8 2.8 0 0 1 4.8 7Z"></path>
+      <path d="M2 12.5h20"></path><path d="M9.5 12.5v1.2h5v-1.2"></path>
+    </symbol>
+    <symbol id="icon-gauge" viewBox="0 0 24 24">
+      <path d="M4.2 16a8.8 8.8 0 1 1 17.6 0"></path>
+      <path d="M12 16 16.2 9"></path>
+      <path d="M8 17h8"></path>
+    </symbol>
+    <symbol id="icon-palette" viewBox="0 0 24 24">
+      <path d="M12 3.5a8.8 8.8 0 0 0 0 17.6h1.1a1.8 1.8 0 0 0 1.1-3.2 1.7 1.7 0 0 1 1.1-3h1.7a4.7 4.7 0 0 0 0-9.4A10 10 0 0 0 12 3.5Z"></path>
+      <path d="M7.8 10h.01"></path><path d="M10.5 7.5h.01"></path><path d="M14.3 7.8h.01"></path>
+    </symbol>
+    <symbol id="icon-star-map" viewBox="0 0 24 24">
+      <path d="m5 18 5.2-5.4 4.6 2.1L19 7"></path>
+      <path d="M5 18h.01"></path><path d="M10.2 12.6h.01"></path><path d="M14.8 14.7h.01"></path><path d="M19 7h.01"></path>
+      <path d="M7.5 5.2l.5 1.2 1.2.5-1.2.5-.5 1.2-.5-1.2-1.2-.5 1.2-.5.5-1.2Z"></path>
+    </symbol>
+    <symbol id="icon-leaf" viewBox="0 0 24 24">
+      <path d="M20.5 4.5C12.2 4.7 6.2 8.8 5.2 15.7c-.5 3.5 2.7 5.4 5.6 3.7 4.9-2.8 6.4-8.2 9.7-14.9Z"></path>
+      <path d="M5.7 18.5c2.4-3.9 5.4-6.6 9.8-8.4"></path>
+    </symbol>
+    <symbol id="icon-info" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="9"></circle><path d="M12 10.5v5.2"></path><path d="M12 7.3h.01"></path>
+    </symbol>
+    <symbol id="icon-arrow-left" viewBox="0 0 24 24">
+      <path d="M15 5 8 12l7 7"></path>
+    </symbol>
+    <symbol id="icon-arrow-right" viewBox="0 0 24 24">
+      <path d="m9 5 7 7-7 7"></path>
+    </symbol>
+  </svg>
+
+  <div class="app">
+    <header class="topbar">
+      <a class="brand" href="#" aria-label="晶缘首页">
+        <span class="brand-mark"><svg aria-hidden="true"><use href="#icon-logo"></use></svg></span>
+        <span>晶缘</span>
+      </a>
+      <div class="top-note">
+        <svg class="icon" aria-hidden="true"><use href="#icon-info"></use></svg>
+        <span>娱乐灵感参考，不替代专业建议</span>
+      </div>
+    </header>
+
+    <main class="workspace">
+      <section class="panel input-panel" aria-labelledby="brandTitle">
+        <div class="intro-pill">
+          <svg class="icon" aria-hidden="true"><use href="#icon-leaf"></use></svg>
+          <span>Crystal Reading</span>
+        </div>
+        <h1 id="brandTitle">今日水晶<span class="headline-soft">能量建议</span></h1>
+        <p class="subhead">输入出生年月日，选择今天想照顾的方向。系统会用星座、五行与祈愿主题，生成 Top 3 水晶建议。</p>
+
+        <form class="form" id="readingForm">
+          <div class="field">
+            <label class="field-label" for="birthYear">
+              <span class="label-icon"><svg class="icon" aria-hidden="true"><use href="#icon-calendar"></use></svg></span>
+              <span>出生年月日</span>
+            </label>
+            <div class="date-grid">
+              <span class="select-wrap"><select id="birthYear" aria-label="出生年份"></select></span>
+              <span class="select-wrap"><select id="birthMonth" aria-label="出生月份"></select></span>
+              <span class="select-wrap"><select id="birthDay" aria-label="出生日期"></select></span>
+            </div>
+          </div>
+
+          <div class="field">
+            <p class="field-title" id="themeLabel">
+              <span class="label-icon"><svg class="icon" aria-hidden="true"><use href="#icon-spark"></use></svg></span>
+              <span>今日祈愿</span>
+            </p>
+            <div class="themes" role="group" aria-labelledby="themeLabel">
+              <button class="chip" type="button" aria-pressed="false" data-theme="wealth">
+                <svg class="icon" aria-hidden="true"><use href="#icon-coin"></use></svg><span>财运</span>
+              </button>
+              <button class="chip" type="button" aria-pressed="false" data-theme="studies">
+                <svg class="icon" aria-hidden="true"><use href="#icon-book"></use></svg><span>学业</span>
+              </button>
+              <button class="chip" type="button" aria-pressed="false" data-theme="love">
+                <svg class="icon" aria-hidden="true"><use href="#icon-heart"></use></svg><span>桃花</span>
+              </button>
+              <button class="chip" type="button" aria-pressed="false" data-theme="health">
+                <svg class="icon" aria-hidden="true"><use href="#icon-shield"></use></svg><span>健康</span>
+              </button>
+              <button class="chip" type="button" aria-pressed="false" data-theme="career">
+                <svg class="icon" aria-hidden="true"><use href="#icon-briefcase"></use></svg><span>事业</span>
+              </button>
+            </div>
+            <p class="hint">可多选，也可以不选；不选时会按出生星座与五行做综合推荐。</p>
+          </div>
+
+          <div class="submit-row">
+            <button class="submit" id="submitButton" type="submit">
+              <svg class="icon" aria-hidden="true"><use href="#icon-spark"></use></svg>
+              <span>生成今日推荐</span>
+            </button>
+            <button class="reset" id="resetButton" type="button">清空祈愿</button>
+          </div>
+        </form>
+
+        <div class="trust-row" aria-label="使用说明">
+          <span class="trust-item"><svg class="icon" aria-hidden="true"><use href="#icon-shield"></use></svg>无需存储</span>
+          <span class="trust-item"><svg class="icon" aria-hidden="true"><use href="#icon-info"></use></svg>本地计算</span>
+          <span class="trust-item"><svg class="icon" aria-hidden="true"><use href="#icon-spark"></use></svg>Top 3 推荐</span>
+        </div>
+      </section>
+
+      <section class="panel result-panel" aria-live="polite" aria-labelledby="resultTitle">
+        <div class="result-head">
+          <h2 class="result-title" id="resultTitle">
+            <span class="round-icon"><svg class="icon" aria-hidden="true"><use href="#icon-logo"></use></svg></span>
+            <span>生成结果</span>
+          </h2>
+          <span class="ethical-pill"><svg class="icon" aria-hidden="true"><use href="#icon-info"></use></svg>Accessible & Ethical</span>
+        </div>
+        <div class="result-body" id="resultBody"></div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const themeLabels = { wealth: "财运", studies: "学业", love: "桃花", health: "健康", career: "事业" };
+    const elementLabels = { wood: "木", fire: "火", earth: "土", metal: "金", water: "水" };
+    const elementNotes = {
+      wood: "木主生发、学习与人缘，适合把注意力放在成长、关系舒展和新机会上。",
+      fire: "火主热度、表达与吸引力，适合提升行动、气色、魅力和主动争取。",
+      earth: "土主稳定、承载与积累，适合守财、落地、修复秩序与长期推进。",
+      metal: "金主边界、判断与执行，适合提升决断、专业感和资源筛选能力。",
+      water: "水主流动、情绪与直觉，适合沟通、疗愈、灵感与柔性处理关系。"
+    };
+    const zodiacNotes = {
+      aries: "白羊座行动感强，适合选择能把热情导向执行的水晶。",
+      taurus: "金牛座重视稳定和实际回报，适合沉稳、守成、持续型能量。",
+      gemini: "双子座偏沟通和信息流动，适合辅助表达、学习和思路转换。",
+      cancer: "巨蟹座重感受与安全感，适合安抚情绪、稳定内在节奏。",
+      leo: "狮子座强调自信与显化，适合提升气场、创造力和被看见的力量。",
+      virgo: "处女座重秩序、分析与细节，适合净化杂念、提高专注。",
+      libra: "天秤座关注关系与美感，适合增强亲和力、社交平衡和吸引力。",
+      scorpio: "天蝎座直觉深、能量强，适合保护、转化与深层修复。",
+      sagittarius: "射手座追求开阔与信念，适合探索、表达和远景规划。",
+      capricorn: "摩羯座重目标与长期积累，适合事业推进和稳定财务。",
+      aquarius: "水瓶座偏理性、创新与洞察，适合学习、表达和独立判断。",
+      pisces: "双鱼座感受力细腻，适合情绪疗愈、灵感和柔软关系。"
+    };
+
+    const crystals = [
+      { name: "超七", slug: "super-seven", themes: ["career", "love", "studies"], elements: ["fire", "water"], affinity: ["scorpio", "pisces", "sagittarius"], lucky: "紫烟色", luckyColor: "#8b6a86", tone: "灵感整合", tagline: "把分散的直觉收束成清晰判断。", base: "偏向灵感、转化与复合型能量整合", reason: "适合需要同时处理关系、目标与直觉判断的阶段。" },
+      { name: "绿幽灵", slug: "green-phantom", themes: ["wealth", "career"], elements: ["wood", "earth"], affinity: ["taurus", "capricorn", "virgo"], lucky: "幽灵绿", luckyColor: "#5f8f6a", tone: "事业生长", tagline: "让机会慢慢落地，像层层生长的山影。", base: "偏向事业积累、财富生长与稳定推进", reason: "适合把长期计划拆成可执行步骤，强化财运与事业节奏。" },
+      { name: "发晶", slug: "rutile-quartz", themes: ["career", "wealth"], elements: ["metal", "fire"], affinity: ["leo", "aries", "capricorn"], lucky: "金丝透", luckyColor: "#c6a65a", tone: "行动放大", tagline: "把目标感拉直，让行动更有穿透力。", base: "偏向目标推进、决断力与显化效率", reason: "适合需要增强气场、推进项目和把握机会时佩戴。" },
+      { name: "碧玺", slug: "tourmaline", themes: ["love", "health", "career"], elements: ["wood", "fire"], affinity: ["libra", "gemini", "leo"], lucky: "西瓜色", luckyColor: "#b35f71", tone: "情绪流通", tagline: "让表达更自然，也让紧绷感慢慢松开。", base: "偏向情绪流通、关系协调与活力补充", reason: "适合关系沟通、社交状态和日常能量平衡。" },
+      { name: "钛晶", slug: "gold-rutilated-quartz", themes: ["wealth", "career"], elements: ["metal", "earth"], affinity: ["leo", "capricorn", "aries"], lucky: "钛金色", luckyColor: "#d4a84b", tone: "贵气聚焦", tagline: "把野心照亮，也把判断压实。", base: "偏向聚财、领导力与高强度推进", reason: "适合目标明确、需要提升财气与执行魄力的日子。" },
+      { name: "兔毛晶", slug: "rabbit-hair-quartz", themes: ["love", "health"], elements: ["fire", "earth"], affinity: ["cancer", "pisces", "taurus"], lucky: "暖橘色", luckyColor: "#d28a56", tone: "柔暖修复", tagline: "给情绪一点温度，让状态重新柔和起来。", base: "偏向情绪修复、亲和力与温暖陪伴", reason: "适合状态疲惫、关系需要缓和或想提升柔和魅力时。" },
+      { name: "绿松石", slug: "turquoise", themes: ["health", "studies", "career"], elements: ["wood", "water"], affinity: ["sagittarius", "aquarius", "pisces"], lucky: "松石蓝", luckyColor: "#3ea7a0", tone: "表达守护", tagline: "让表达更顺，也让心绪更有出口。", base: "偏向沟通、旅行守护与心绪舒展", reason: "适合学习表达、跨环境适应和需要稳定心态时。" },
+      { name: "黄水晶", slug: "citrine", themes: ["wealth", "career", "studies"], elements: ["earth", "fire"], affinity: ["leo", "sagittarius", "taurus"], lucky: "柠檬黄", luckyColor: "#d7a634", tone: "财富明朗", tagline: "把信心点亮，让机会更容易被看见。", base: "偏向正财、信心、表达与商业判断", reason: "适合提升财运、面试谈判和需要积极表达的场景。" },
+      { name: "黑发晶", slug: "black-rutilated-quartz", themes: ["career", "health"], elements: ["water", "metal"], affinity: ["scorpio", "capricorn", "aquarius"], lucky: "黑针透", luckyColor: "#3f444d", tone: "强力防护", tagline: "把边界拉清楚，让行动更稳更硬。", base: "偏向防护、执行力与深层稳定", reason: "适合压力大、环境复杂或需要强化边界感的阶段。" },
+      { name: "异象水晶", slug: "garden-quartz", themes: ["career", "health", "wealth"], elements: ["earth", "wood"], affinity: ["virgo", "taurus", "capricorn"], lucky: "庭园褐", luckyColor: "#9a7557", tone: "内在沉淀", tagline: "让杂乱经验沉下来，慢慢长成判断。", base: "偏向沉淀、复盘与长期稳定", reason: "适合复盘成长、稳定生活秩序和处理长期目标。" },
+      { name: "太阳石", slug: "sunstone", themes: ["career", "love"], elements: ["fire", "earth"], affinity: ["leo", "aries", "sagittarius"], lucky: "日光橙", luckyColor: "#d98243", tone: "自信显化", tagline: "把光感带回身上，让存在感自然打开。", base: "偏向自信、魅力与创造力外放", reason: "适合需要表现、社交、创作或提升个人气场时。" },
+      { name: "石榴石", slug: "garnet", themes: ["love", "health", "career"], elements: ["fire", "earth"], affinity: ["scorpio", "aries", "capricorn"], lucky: "酒红色", luckyColor: "#7f2634", tone: "气血热度", tagline: "给状态补一点韧劲，也让心气更足。", base: "偏向活力、稳定情感与持续行动", reason: "适合体感疲惫、关系降温或需要恢复行动热度时。" },
+      { name: "南红玛瑙", slug: "southern-red-agate", themes: ["health", "love", "wealth"], elements: ["fire", "earth"], affinity: ["aries", "leo", "taurus"], lucky: "南红色", luckyColor: "#c94f3d", tone: "温养守成", tagline: "稳住心气，也稳住已经积累的好运。", base: "偏向温养、守财与情绪稳定", reason: "适合需要稳住状态、增强亲和力和守住成果的日子。" },
+      { name: "葡萄石", slug: "prehnite", themes: ["health", "studies"], elements: ["wood", "water"], affinity: ["virgo", "cancer", "pisces"], lucky: "葡萄绿", luckyColor: "#a6c878", tone: "清柔安定", tagline: "让紧绷感变轻，思路也慢慢清亮。", base: "偏向疗愈、整理与轻柔专注", reason: "适合焦虑、学习整理和需要温和恢复秩序时。" },
+      { name: "紫水晶", slug: "amethyst", themes: ["studies", "health"], elements: ["water", "fire"], affinity: ["pisces", "aquarius", "sagittarius"], lucky: "紫罗兰", luckyColor: "#8f78b7", tone: "静心明智", tagline: "把念头放慢，让直觉和理性重新对齐。", base: "偏向静心、睡眠、灵感与学习专注", reason: "适合需要稳定情绪、提升专注和保持清醒判断时。" },
+      { name: "紫锂辉", slug: "kunzite", themes: ["love", "health"], elements: ["water", "fire"], affinity: ["libra", "pisces", "cancer"], lucky: "薰衣粉", luckyColor: "#c7a3c8", tone: "温柔打开", tagline: "把防备放轻一点，让喜欢更自然流动。", base: "偏向心轮疗愈、情感表达与柔软关系", reason: "适合桃花、关系修复和从紧绷情绪里松下来。" },
+      { name: "红纹石", slug: "rhodochrosite", themes: ["love", "health"], elements: ["fire", "water"], affinity: ["libra", "cancer", "pisces"], lucky: "玫瑰红", luckyColor: "#c96a75", tone: "爱意修复", tagline: "让心里的旧结松开一点，重新靠近温柔。", base: "偏向情感疗愈、自我接纳与桃花吸引", reason: "适合关系修复、增强亲密感和提升自我价值感。" },
+      { name: "海蓝宝", slug: "aquamarine", themes: ["studies", "love", "career"], elements: ["water", "metal"], affinity: ["pisces", "gemini", "aquarius"], lucky: "海盐蓝", luckyColor: "#83b8c9", tone: "沟通澄清", tagline: "让话说得更清楚，心也更开阔。", base: "偏向沟通、勇气、表达与情绪降噪", reason: "适合表达、面试、学习汇报和关系沟通场景。" },
+      { name: "月光石", slug: "moonstone", themes: ["love", "health"], elements: ["water", "metal"], affinity: ["cancer", "pisces", "libra"], lucky: "月白色", luckyColor: "#d8d6c9", tone: "温柔流动", tagline: "让情绪有潮汐，也让直觉更柔和。", base: "偏向直觉、女性能量与关系流动", reason: "适合情绪起伏、亲密关系和需要柔和保护感时。" },
+      { name: "虎眼石", slug: "tiger-eye", themes: ["wealth", "career"], elements: ["earth", "fire"], affinity: ["leo", "capricorn", "taurus"], lucky: "虎金棕", luckyColor: "#b47a39", tone: "胆识落地", tagline: "把犹豫压下去，让判断更有胆量。", base: "偏向勇气、执行、守财与现实判断", reason: "适合谈判、做决定、推进事业和增强稳定行动力。" },
+      { name: "蓝晶石", slug: "kyanite", themes: ["studies", "career"], elements: ["water", "metal"], affinity: ["aquarius", "gemini", "virgo"], lucky: "深海蓝", luckyColor: "#547fa5", tone: "思维校准", tagline: "把思路拉直，让表达更有结构。", base: "偏向理性表达、学习整合与清晰判断", reason: "适合学习、写作、复盘和复杂沟通。" },
+      { name: "绿纹石", slug: "green-striped-stone", themes: ["health", "wealth"], elements: ["wood", "earth"], affinity: ["taurus", "virgo", "cancer"], lucky: "浅纹绿", luckyColor: "#8aa978", tone: "舒缓生长", tagline: "让节奏慢下来，稳稳把状态养回来。", base: "偏向舒缓、稳定成长与日常守护", reason: "适合身心恢复、生活秩序和温和财运辅助。" },
+      { name: "草莓晶", slug: "strawberry-quartz", themes: ["love", "career"], elements: ["fire", "wood"], affinity: ["libra", "leo", "gemini"], lucky: "莓果粉", luckyColor: "#d88491", tone: "甜感吸引", tagline: "让亲和力更轻盈，也让好感更容易发生。", base: "偏向桃花、亲和力与社交魅力", reason: "适合提升桃花、社交表现和柔和表达。" },
+      { name: "金沙石", slug: "lucky-gold-stone", themes: ["wealth", "career"], elements: ["fire", "earth"], affinity: ["leo", "sagittarius", "aries"], lucky: "金沙棕", luckyColor: "#a76f35", tone: "好运点亮", tagline: "给目标一点闪光感，让机会更容易被抓住。", base: "偏向好运、信心与财富机会感", reason: "适合增强积极状态、财运期待和行动信念。" },
+      { name: "白幽灵", slug: "white-phantom", themes: ["studies", "health", "career"], elements: ["metal", "water"], affinity: ["virgo", "aquarius", "capricorn"], lucky: "云雾白", luckyColor: "#d9d8cf", tone: "净化复盘", tagline: "把旧的杂音沉下去，留下清楚的方向。", base: "偏向净化、复盘、整理与清明感", reason: "适合学习整理、状态重启和需要清理杂念时。" },
+      { name: "白水晶", slug: "clear-quartz", themes: ["studies", "health", "career"], elements: ["metal", "water"], affinity: ["virgo", "capricorn", "aquarius"], lucky: "透明白", luckyColor: "#d8d5cc", tone: "净化平衡", tagline: "清掉杂念，放大今天最重要的意图。", base: "偏向净化、放大意图与日常平衡", reason: "适合日常佩戴，可作为综合型水晶稳定整体能量场。" },
+      { name: "粉水晶", slug: "rose-quartz", themes: ["love"], elements: ["fire", "earth"], affinity: ["taurus", "libra", "pisces"], lucky: "柔粉色", luckyColor: "#d7a7a0", tone: "关系柔化", tagline: "让表达更柔软，也让好感自然靠近。", base: "偏向亲和、修复与情感吸引", reason: "温和打开亲和力，适合修复关系、提升桃花与柔软表达。" },
+      { name: "金曜石", slug: "gold-obsidian", themes: ["wealth", "career", "health"], elements: ["earth", "metal"], affinity: ["leo", "capricorn", "aries"], lucky: "黑金色", luckyColor: "#8b6a2f", tone: "守护聚财", tagline: "把外界杂音挡在外面，也把行动力收回来。", base: "偏向守财、防护与行动落地", reason: "适合需要稳定气场、减少消耗并专注目标推进的日子。" },
+      { name: "银曜石", slug: "silver-obsidian", themes: ["career", "health", "studies"], elements: ["metal", "water"], affinity: ["aquarius", "capricorn", "virgo"], lucky: "银灰黑", luckyColor: "#6f7378", tone: "清醒边界", tagline: "让判断更冷静，给复杂情绪留出距离。", base: "偏向清醒判断、边界感与专注", reason: "适合工作判断、复盘学习和压力较重时维持清醒状态。" },
+      { name: "黑曜石", slug: "obsidian", themes: ["health", "career"], elements: ["water", "metal"], affinity: ["scorpio", "capricorn", "cancer"], lucky: "曜石黑", luckyColor: "#3c3730", tone: "边界防护", tagline: "把边界立住，减少不必要的消耗。", base: "偏向边界、防护与沉稳", reason: "适合边界感不足或压力较重时使用，帮助减少外界消耗。" },
+      { name: "茶晶", slug: "smoky-quartz", themes: ["health", "wealth"], elements: ["earth", "water"], affinity: ["taurus", "capricorn", "cancer"], lucky: "烟茶色", luckyColor: "#8a6d55", tone: "生活秩序", tagline: "把节奏稳下来，守住已经拥有的。", base: "偏向稳定、守财与生活秩序", reason: "能量厚实稳定，适合缓解焦虑、守财与维持规律节奏。" },
+      { name: "朱砂", slug: "cinnabar", themes: ["health", "career", "love"], elements: ["fire", "earth"], affinity: ["aries", "leo", "scorpio"], lucky: "朱砂红", luckyColor: "#c8281f", tone: "安神定心", tagline: "给心气补一点热度，也让状态更笃定。", base: "偏向定心、气色与行动热度", reason: "适合需要稳定心神、提升气色和持续行动力的阶段。" }
+    ];
+
+    const birthYear = document.querySelector("#birthYear");
+    const birthMonth = document.querySelector("#birthMonth");
+    const birthDay = document.querySelector("#birthDay");
+    const form = document.querySelector("#readingForm");
+    const submitButton = document.querySelector("#submitButton");
+    const resetButton = document.querySelector("#resetButton");
+    const resultBody = document.querySelector("#resultBody");
+    const themeButtons = [...document.querySelectorAll(".chip")];
+    const selectedThemes = new Set();
+    let timers = [];
+    let carouselIndex = 0;
+
+    initDateSelects();
+    renderEmptyState();
+
+    themeButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        const theme = button.dataset.theme;
+        if (selectedThemes.has(theme)) {
+          selectedThemes.delete(theme);
+          button.setAttribute("aria-pressed", "false");
+        } else {
+          selectedThemes.add(theme);
+          button.setAttribute("aria-pressed", "true");
+        }
+      });
+    });
+
+    birthYear.addEventListener("change", syncDays);
+    birthMonth.addEventListener("change", syncDays);
+
+    resetButton.addEventListener("click", () => {
+      selectedThemes.clear();
+      themeButtons.forEach((button) => button.setAttribute("aria-pressed", "false"));
+    });
+
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      const date = new Date(Number(birthYear.value), Number(birthMonth.value) - 1, Number(birthDay.value), 12);
+      const themes = [...selectedThemes];
+      const profile = buildProfile(date);
+      const recommendations = getTopCrystals(profile, themes);
+      openReading(profile, themes, recommendations);
+    });
+
+    resultBody.addEventListener("click", (event) => {
+      const arrow = event.target.closest(".carousel-arrow");
+      if (arrow) {
+        const direction = arrow.dataset.direction === "next" ? 1 : -1;
+        setCarouselIndex(carouselIndex + direction);
+        return;
+      }
+
+      const button = event.target.closest(".analysis-toggle");
+      if (!button) return;
+      const card = button.closest(".recommend-card");
+      const panel = card.querySelector(".analysis-panel");
+      const open = button.getAttribute("aria-expanded") === "true";
+      button.setAttribute("aria-expanded", String(!open));
+      button.innerHTML = iconUse("icon-info") + (open ? "查看能量解析" : "收起能量解析");
+      panel.classList.toggle("is-open", !open);
+      if (!open) {
+        window.setTimeout(() => panel.scrollIntoView({ block: "nearest", behavior: "smooth" }), 40);
+      }
+    });
+
+    function initDateSelects() {
+      const nowYear = new Date().getFullYear();
+      for (let year = nowYear; year >= 1920; year -= 1) {
+        birthYear.add(new Option(`${year} 年`, String(year)));
+      }
+      for (let month = 1; month <= 12; month += 1) {
+        birthMonth.add(new Option(`${pad(month)} 月`, String(month)));
+      }
+      birthYear.value = "1997";
+      birthMonth.value = "9";
+      syncDays();
+      birthDay.value = "1";
+    }
+
+    function syncDays() {
+      const current = Number(birthDay.value || 1);
+      const days = new Date(Number(birthYear.value), Number(birthMonth.value), 0).getDate();
+      birthDay.innerHTML = "";
+      for (let day = 1; day <= days; day += 1) {
+        birthDay.add(new Option(`${pad(day)} 日`, String(day)));
+      }
+      birthDay.value = String(Math.min(current, days));
+    }
+
+    function renderEmptyState() {
+      resultBody.innerHTML = `
+        <div class="empty-state">
+          <article class="empty-card">
+            <div class="empty-orb">${iconUse("icon-logo")}</div>
+            <h2>等待生成今日水晶</h2>
+            <p>左侧选择出生日期和今日祈愿后，这里会显示推算进度、星座五行分析、Top 3 水晶推荐和适配度说明。</p>
+          </article>
+        </div>
+      `;
+    }
+
+    function buildProfile(date) {
+      const month = date.getMonth() + 1;
+      const day = date.getDate();
+      const year = date.getFullYear();
+      const zodiac = getZodiac(month, day);
+      const stemElements = ["wood", "wood", "fire", "fire", "earth", "earth", "metal", "metal", "water", "water"];
+      const stemIndex = mod(year - 4, 10);
+      const element = stemElements[stemIndex];
+      return { zodiac, element, year, month, day };
+    }
+
+    function getZodiac(month, day) {
+      const marks = [
+        ["capricorn", 120], ["aquarius", 219], ["pisces", 321], ["aries", 420],
+        ["taurus", 521], ["gemini", 621], ["cancer", 723], ["leo", 823],
+        ["virgo", 923], ["libra", 1023], ["scorpio", 1122], ["sagittarius", 1222],
+        ["capricorn", 1232]
+      ];
+      const value = month * 100 + day;
+      return marks.find(([, limit]) => value < limit)[0];
+    }
+
+    function zodiacName(sign) {
+      return {
+        aries: "白羊座", taurus: "金牛座", gemini: "双子座", cancer: "巨蟹座",
+        leo: "狮子座", virgo: "处女座", libra: "天秤座", scorpio: "天蝎座",
+        sagittarius: "射手座", capricorn: "摩羯座", aquarius: "水瓶座", pisces: "双鱼座"
+      }[sign];
+    }
+
+    function getTopCrystals(profile, themes) {
+      return crystals.map((crystal, index) => {
+        const matchedThemes = themes.filter((theme) => crystal.themes.includes(theme));
+        const themeScore = themes.length ? matchedThemes.length * 23 + (matchedThemes.length === themes.length ? 10 : 0) : 22;
+        const elementScore = crystal.elements.includes(profile.element) ? 29 : 12;
+        const zodiacScore = crystal.affinity.includes(profile.zodiac) ? 21 : 9;
+        const rhythmScore = (profile.year + profile.month * 5 + profile.day + index * 7) % 8;
+        const score = Math.min(98, Math.max(62, themeScore + elementScore + zodiacScore + rhythmScore));
+        const energy = Math.min(5, Math.max(3.4, Math.round((score / 20) * 10) / 10));
+        const basis = [
+          themes.length ? `祈愿对应：${matchedThemes.length ? matchedThemes.map((item) => themeLabels[item]).join("、") : "作为辅助能量补位"}` : "祈愿对应：综合平衡",
+          `五行对应：这款水晶偏${crystal.elements.map((item) => elementLabels[item]).join("、")}，${crystal.elements.includes(profile.element) ? "与你的五行气质同频" : "可作为互补能量"}`,
+          `星座气质：你的${zodiacName(profile.zodiac)}${crystal.affinity.includes(profile.zodiac) ? "与这款水晶的表达方式更贴近" : "可借这款水晶补足当下主题所需的能量"}`
+        ];
+        return { ...crystal, score, energy, basis };
+      }).sort((a, b) => b.score - a.score).slice(0, 3);
+    }
+
+    function openReading(profile, themes, recommendations) {
+      clearTimers();
+      submitButton.disabled = true;
+      renderLoadingState();
+      typeText("正在推算命理五行，请稍候。系统正在把出生日期、星座气质与今日祈愿合并校准。", document.querySelector("#statusText"), 54);
+      runProgress(5200, () => {
+        submitButton.disabled = false;
+        renderResult(profile, themes, recommendations);
+      });
+    }
+
+    function renderLoadingState() {
+      resultBody.innerHTML = `
+        <div class="loading-state">
+          <article class="loading-card">
+            <div class="loading-top">
+              <div class="pulse-gem">${iconUse("icon-logo")}</div>
+              <div>
+                <h2>正在推算命理五行</h2>
+                <p id="statusText"></p>
+              </div>
+            </div>
+            <div class="progress-box">
+              <div class="progress-meta">
+                <span id="progressStage">准备校准</span>
+                <span id="progressPercent">0%</span>
+              </div>
+              <div class="progress-track" aria-hidden="true">
+                <div class="progress-bar" id="progressBar"></div>
+              </div>
+            </div>
+            <ul class="stage-list" id="stageList" aria-label="推算步骤"></ul>
+          </article>
+        </div>
+      `;
+      renderStageList("读取出生年月日");
+    }
+
+    function renderResult(profile, themes, recommendations) {
+      carouselIndex = 0;
+      const themeText = themes.length ? themes.map((item) => themeLabels[item]).join("、") : "综合平衡";
+      resultBody.innerHTML = `
+        <div class="recommend-wrap carousel-shell">
+          <div class="carousel-frame">
+            <div class="carousel-track" id="carouselTrack">
+              ${recommendations.map((item, index) => renderCrystalSlide(item, index, profile, themeText)).join("")}
+            </div>
+          </div>
+          <div class="carousel-nav" aria-label="水晶推荐切换">
+            <button class="carousel-arrow" id="prevCrystal" type="button" data-direction="prev" aria-label="查看上一款水晶">
+              ${iconUse("icon-arrow-left")}
+            </button>
+            <div class="carousel-status">
+              <span id="carouselStatus">Top 1 / ${recommendations.length}</span>
+              <span class="carousel-dots" id="carouselDots" aria-hidden="true">
+                ${recommendations.map((_, index) => `<i class="carousel-dot${index === 0 ? " is-active" : ""}"></i>`).join("")}
+              </span>
+            </div>
+            <button class="carousel-arrow" id="nextCrystal" type="button" data-direction="next" aria-label="查看下一款水晶">
+              ${iconUse("icon-arrow-right")}
+            </button>
+          </div>
+          <p class="fine-print">温和提醒：水晶建议用于灵感、审美与情绪陪伴，不构成医疗、财务、情感或职业决策依据。</p>
+        </div>
+      `;
+      updateCarousel();
+    }
+
+    function renderCrystalSlide(item, index, profile, themeText) {
+      const rank = index + 1;
+      return `
+        <section class="carousel-slide" aria-label="Top ${rank} 水晶推荐">
+          <article class="recommend-card">
+            <div class="recommend-top">
+              <div class="recommend-label">${iconUse("icon-spark")}${index === 0 ? "今日为你推荐" : "备选推荐"}</div>
+              <div class="score-bubble"><span>${item.score}%</span><small>适配度</small></div>
+            </div>
+            <img class="crystal-photo" src="assets/${item.slug}.png" alt="${item.name}实物手链图" width="960" height="620" />
+            <div class="hero-copy">
+              <h2>${item.name} · ${item.tone}</h2>
+              <p>${item.tagline}</p>
+            </div>
+            <div class="metric-grid">
+              <div class="metric" style="--lucky-color:${item.luckyColor}">
+                ${iconUse("icon-palette")}
+                <b>幸运色</b>
+                <span><i class="lucky-dot"></i>${item.lucky}</span>
+              </div>
+              <div class="metric">
+                ${iconUse("icon-spark")}
+                <b>能量评分</b>
+                <span class="big">${item.energy.toFixed(1)}</span>
+              </div>
+              <div class="metric">
+                ${iconUse("icon-gauge")}
+                <b>适配指数</b>
+                <span class="big">${item.score}%</span>
+              </div>
+              <div class="metric">
+                ${iconUse("icon-star-map")}
+                <b>命盘要点</b>
+                <span>${zodiacName(profile.zodiac)} · 五行${elementLabels[profile.element]}</span>
+              </div>
+            </div>
+            <button class="analysis-toggle" type="button" aria-expanded="false" aria-controls="analysisPanel${index}">
+              ${iconUse("icon-info")}查看能量解析
+            </button>
+            <div class="analysis-panel" id="analysisPanel${index}">
+              <strong>${zodiacName(profile.zodiac)}</strong>：${zodiacNotes[profile.zodiac]}<br>
+              <strong>五行属${elementLabels[profile.element]}</strong>：${elementNotes[profile.element]}<br>
+              <strong>本次祈愿</strong>：${themeText}。${item.base}，因此推荐 ${item.name}。<br>
+              <strong>适配度说明</strong>：${item.basis.join("；")}。最终百分比由祈愿主题、五行对应、星座气质和日期节奏权重综合得出。
+            </div>
+          </article>
+        </section>
+      `;
+    }
+
+    function setCarouselIndex(index) {
+      const total = document.querySelectorAll(".carousel-slide").length;
+      carouselIndex = Math.max(0, Math.min(index, total - 1));
+      document.querySelectorAll(".analysis-toggle").forEach((button) => {
+        button.setAttribute("aria-expanded", "false");
+        button.innerHTML = iconUse("icon-info") + "查看能量解析";
+      });
+      document.querySelectorAll(".analysis-panel").forEach((panel) => panel.classList.remove("is-open"));
+      updateCarousel();
+    }
+
+    function updateCarousel() {
+      const track = document.querySelector("#carouselTrack");
+      if (!track) return;
+      const slides = [...document.querySelectorAll(".carousel-slide")];
+      const total = slides.length;
+      track.style.transform = `translateX(-${carouselIndex * 100}%)`;
+      slides.forEach((slide, index) => {
+        slide.setAttribute("aria-hidden", String(index !== carouselIndex));
+      });
+      document.querySelector("#carouselStatus").textContent = `Top ${carouselIndex + 1} / ${total}`;
+      document.querySelector("#prevCrystal").classList.toggle("is-hidden", carouselIndex === 0);
+      document.querySelector("#nextCrystal").classList.toggle("is-hidden", carouselIndex === total - 1);
+      document.querySelectorAll(".carousel-dot").forEach((dot, index) => {
+        dot.classList.toggle("is-active", index === carouselIndex);
+      });
+    }
+
+    function runProgress(duration, done) {
+      const start = performance.now();
+      const checkpoints = [
+        { at: 0, p: 3, text: "读取出生年月日" },
+        { at: 520, p: 12, text: "换算太阳星座" },
+        { at: 1160, p: 27, text: "计算年份五行" },
+        { at: 1780, p: 39, text: "校验今日祈愿" },
+        { at: 2640, p: 56, text: "匹配水晶属性" },
+        { at: 3420, p: 70, text: "评估能量评分" },
+        { at: 4380, p: 88, text: "生成适配解析" },
+        { at: 5050, p: 100, text: "完成推荐" }
+      ];
+      let cursor = 0;
+      const timer = setInterval(() => {
+        const elapsed = performance.now() - start;
+        while (cursor < checkpoints.length - 1 && elapsed >= checkpoints[cursor + 1].at) cursor += 1;
+        const current = checkpoints[cursor];
+        const next = checkpoints[Math.min(cursor + 1, checkpoints.length - 1)];
+        const span = Math.max(1, next.at - current.at);
+        const local = Math.min(1, Math.max(0, (elapsed - current.at) / span));
+        const eased = 1 - Math.pow(1 - local, 2.6);
+        const progress = Math.min(100, Math.round(current.p + (next.p - current.p) * eased));
+        document.querySelector("#progressStage").textContent = current.text;
+        document.querySelector("#progressPercent").textContent = `${progress}%`;
+        document.querySelector("#progressBar").style.width = `${progress}%`;
+        renderStageList(current.text);
+        if (elapsed >= duration) {
+          clearInterval(timer);
+          document.querySelector("#progressStage").textContent = "完成推荐";
+          document.querySelector("#progressPercent").textContent = "100%";
+          document.querySelector("#progressBar").style.width = "100%";
+          window.setTimeout(done, 260);
+        }
+      }, 120);
+      timers.push(timer);
+    }
+
+    function renderStageList(activeText) {
+      const list = document.querySelector("#stageList");
+      if (!list) return;
+      const stages = ["读取出生年月日", "换算太阳星座", "计算年份五行", "校验今日祈愿", "匹配水晶属性", "评估能量评分", "生成适配解析"];
+      list.innerHTML = stages.slice(Math.max(0, stages.indexOf(activeText) - 2), stages.indexOf(activeText) + 3)
+        .map((stage) => `<li class="${stage === activeText ? "is-active" : ""}"><span class="stage-dot"></span>${stage}</li>`)
+        .join("");
+    }
+
+    function typeText(text, target, speed) {
+      let index = 0;
+      const timer = setInterval(() => {
+        target.textContent = text.slice(0, index);
+        index += 1;
+        if (index > text.length) clearInterval(timer);
+      }, speed);
+      timers.push(timer);
+    }
+
+    function clearTimers() {
+      timers.forEach((timer) => clearInterval(timer));
+      timers = [];
+    }
+
+    function iconUse(id) {
+      return `<svg class="icon" aria-hidden="true"><use href="#${id}"></use></svg>`;
+    }
+
+    function mod(value, divisor) {
+      return ((value % divisor) + divisor) % divisor;
+    }
+
+    function pad(value) {
+      return String(value).padStart(2, "0");
+    }
+  </script>
+</body>
+</html>
