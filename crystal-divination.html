@@ -1485,7 +1485,7 @@
               <div class="recommend-label">${iconUse("icon-spark")}${index === 0 ? "今日为你推荐" : "备选推荐"}</div>
               <div class="score-bubble"><span>${item.score}%</span><small>适配度</small></div>
             </div>
-            <img class="crystal-photo" src="assets/${item.slug}.png" alt="${item.name}实物手链图" width="960" height="620" />
+            <img class="crystal-photo" src="assets/${item.slug}.webp" alt="${item.name}实物手链图" width="960" height="620" loading="${index === 0 ? "eager" : "lazy"}" decoding="async" fetchpriority="${index === 0 ? "high" : "low"}" />
             <div class="hero-copy">
               <h2>${item.name} · ${item.tone}</h2>
               <p>${item.tagline}</p>

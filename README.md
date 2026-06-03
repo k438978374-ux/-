@@ -18,7 +18,7 @@
 - 不依赖后端
 - 不存储用户数据
 - 可直接部署到 GitHub Pages
-- 已包含 32 款常见水晶实物图资源
+- 已包含 32 款常见水晶实物图资源，网页加载使用轻量 WebP 图片
 
 ## 文件结构
 
@@ -27,6 +27,7 @@ index.html
 crystal-divination.html
 assets/
 all-crystals-contact-sheet.png
+jingyuan-qr.png
 .nojekyll
 ```
 
