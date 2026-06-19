@@ -311,6 +311,97 @@
       font-weight: 550;
     }
 
+    .mode-switch {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      padding: 8px;
+      margin-bottom: 18px;
+      background: rgba(245, 248, 251, .58);
+      border: 1px solid rgba(255, 255, 255, .72);
+      border-radius: 22px;
+      box-shadow: var(--inset);
+    }
+
+    .mode-tab {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 48px;
+      padding: 0 14px;
+      color: var(--muted);
+      background: transparent;
+      border: 0;
+      border-radius: 16px;
+      cursor: pointer;
+      font-weight: 900;
+      transition: transform .18s var(--ease), box-shadow .18s ease, color .18s ease, background .18s ease;
+    }
+
+    .mode-tab[aria-selected="true"] {
+      color: #fff;
+      background: var(--accent);
+      box-shadow: 7px 8px 18px rgba(83, 118, 138, .25), -6px -6px 16px rgba(255, 255, 255, .74);
+    }
+
+    .mode-panel[hidden] {
+      display: none;
+    }
+
+    .quiz-list {
+      display: grid;
+      gap: 14px;
+    }
+
+    .quiz-question {
+      display: grid;
+      gap: 10px;
+      padding: 14px;
+      background: rgba(245, 248, 251, .58);
+      border: 1px solid rgba(255, 255, 255, .72);
+      border-radius: 22px;
+      box-shadow: var(--inset);
+    }
+
+    .quiz-question h3 {
+      margin: 0;
+      color: var(--ink);
+      font-size: 15px;
+      line-height: 1.45;
+      font-weight: 900;
+    }
+
+    .quiz-options {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .quiz-option {
+      min-height: 48px;
+      padding: 0 12px;
+      color: var(--muted);
+      background: var(--surface);
+      border: 1px solid rgba(255, 255, 255, .78);
+      border-radius: 16px;
+      box-shadow: var(--shadow-sm);
+      cursor: pointer;
+      font-weight: 850;
+      transition: transform .18s var(--ease), box-shadow .18s ease, color .18s ease, background .18s ease;
+    }
+
+    .quiz-option:hover,
+    .mode-tab:hover {
+      transform: translateY(-1px);
+    }
+
+    .quiz-option[aria-pressed="true"] {
+      color: #fff;
+      background: var(--accent);
+      box-shadow: 7px 8px 18px rgba(83, 118, 138, .28), -6px -6px 16px rgba(255, 255, 255, .74);
+    }
+
     .submit-row {
       display: grid;
       grid-template-columns: 1fr auto;
@@ -361,6 +452,10 @@
 
     select:focus-visible,
     .chip:focus-visible,
+    .mode-tab:focus-visible,
+    .quiz-option:focus-visible,
+    .metric:focus-visible,
+    .metric-dialog-close:focus-visible,
     .submit:focus-visible,
     .reset:focus-visible,
     .analysis-toggle:focus-visible,
@@ -836,6 +931,7 @@
     }
 
     .metric {
+      width: 100%;
       min-height: 82px;
       padding: 10px 8px;
       background: var(--surface);
@@ -843,6 +939,12 @@
       border-radius: 20px;
       box-shadow: var(--shadow-sm);
       text-align: center;
+      cursor: pointer;
+      transition: transform .18s var(--ease), box-shadow .18s ease;
+    }
+
+    .metric:hover {
+      transform: translateY(-1px);
     }
 
     .metric .icon {
@@ -915,6 +1017,60 @@
 
     .analysis-panel.is-open { display: block; }
     .analysis-panel strong { color: var(--ink); }
+
+    .metric-dialog {
+      position: fixed;
+      inset: 0;
+      z-index: 20;
+      display: none;
+      place-items: center;
+      padding: 18px;
+      background: rgba(38, 48, 68, .28);
+    }
+
+    .metric-dialog.is-open {
+      display: grid;
+    }
+
+    .metric-dialog-card {
+      width: min(100%, 420px);
+      padding: 22px;
+      color: var(--muted);
+      background: var(--surface);
+      border: 1px solid rgba(255, 255, 255, .78);
+      border-radius: 26px;
+      box-shadow: var(--shadow);
+    }
+
+    .metric-dialog-card h3 {
+      margin: 0 0 10px;
+      color: var(--ink);
+      font-size: 22px;
+      line-height: 1.25;
+    }
+
+    .metric-dialog-card p {
+      margin: 0;
+      font-size: 15px;
+      line-height: 1.75;
+      font-weight: 560;
+    }
+
+    .metric-dialog-close {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      margin-top: 18px;
+      padding: 0 18px;
+      color: #fff;
+      background: var(--accent);
+      border: 0;
+      border-radius: 16px;
+      box-shadow: var(--shadow-sm);
+      cursor: pointer;
+      font-weight: 900;
+    }
 
     .alt-list {
       display: grid;
@@ -1131,42 +1287,60 @@
         <h1 id="brandTitle">今日水晶<span class="headline-soft">能量建议</span></h1>
         <p class="subhead">输入出生年月日，选择今天想照顾的方向。系统会用星座、五行与祈愿主题，生成 Top 3 水晶建议。</p>
 
+        <div class="mode-switch" role="tablist" aria-label="推荐模式">
+          <button class="mode-tab" id="birthModeTab" type="button" role="tab" aria-selected="true" aria-controls="birthModePanel" data-mode="birth">
+            <svg class="icon" aria-hidden="true"><use href="#icon-calendar"></use></svg>
+            <span>生辰推荐</span>
+          </button>
+          <button class="mode-tab" id="quizModeTab" type="button" role="tab" aria-selected="false" aria-controls="quizModePanel" data-mode="quiz">
+            <svg class="icon" aria-hidden="true"><use href="#icon-spark"></use></svg>
+            <span>直觉问答</span>
+          </button>
+        </div>
+
         <form class="form" id="readingForm">
-          <div class="field">
-            <label class="field-label" for="birthYear">
-              <span class="label-icon"><svg class="icon" aria-hidden="true"><use href="#icon-calendar"></use></svg></span>
-              <span>出生年月日</span>
-            </label>
-            <div class="date-grid">
-              <span class="select-wrap"><select id="birthYear" aria-label="出生年份"></select></span>
-              <span class="select-wrap"><select id="birthMonth" aria-label="出生月份"></select></span>
-              <span class="select-wrap"><select id="birthDay" aria-label="出生日期"></select></span>
+          <div class="mode-panel" id="birthModePanel" role="tabpanel" aria-labelledby="birthModeTab">
+            <div class="field">
+              <label class="field-label" for="birthYear">
+                <span class="label-icon"><svg class="icon" aria-hidden="true"><use href="#icon-calendar"></use></svg></span>
+                <span>出生年月日</span>
+              </label>
+              <div class="date-grid">
+                <span class="select-wrap"><select id="birthYear" aria-label="出生年份"></select></span>
+                <span class="select-wrap"><select id="birthMonth" aria-label="出生月份"></select></span>
+                <span class="select-wrap"><select id="birthDay" aria-label="出生日期"></select></span>
+              </div>
+            </div>
+
+            <div class="field">
+              <p class="field-title" id="themeLabel">
+                <span class="label-icon"><svg class="icon" aria-hidden="true"><use href="#icon-spark"></use></svg></span>
+                <span>今日祈愿</span>
+              </p>
+              <div class="themes" role="group" aria-labelledby="themeLabel">
+                <button class="chip" type="button" aria-pressed="false" data-theme="wealth">
+                  <svg class="icon" aria-hidden="true"><use href="#icon-coin"></use></svg><span>财运</span>
+                </button>
+                <button class="chip" type="button" aria-pressed="false" data-theme="studies">
+                  <svg class="icon" aria-hidden="true"><use href="#icon-book"></use></svg><span>学业</span>
+                </button>
+                <button class="chip" type="button" aria-pressed="false" data-theme="love">
+                  <svg class="icon" aria-hidden="true"><use href="#icon-heart"></use></svg><span>桃花</span>
+                </button>
+                <button class="chip" type="button" aria-pressed="false" data-theme="health">
+                  <svg class="icon" aria-hidden="true"><use href="#icon-shield"></use></svg><span>健康</span>
+                </button>
+                <button class="chip" type="button" aria-pressed="false" data-theme="career">
+                  <svg class="icon" aria-hidden="true"><use href="#icon-briefcase"></use></svg><span>事业</span>
+                </button>
+              </div>
+              <p class="hint">可多选，也可以不选；不选时会按出生星座与五行做综合推荐。</p>
             </div>
           </div>
 
-          <div class="field">
-            <p class="field-title" id="themeLabel">
-              <span class="label-icon"><svg class="icon" aria-hidden="true"><use href="#icon-spark"></use></svg></span>
-              <span>今日祈愿</span>
-            </p>
-            <div class="themes" role="group" aria-labelledby="themeLabel">
-              <button class="chip" type="button" aria-pressed="false" data-theme="wealth">
-                <svg class="icon" aria-hidden="true"><use href="#icon-coin"></use></svg><span>财运</span>
-              </button>
-              <button class="chip" type="button" aria-pressed="false" data-theme="studies">
-                <svg class="icon" aria-hidden="true"><use href="#icon-book"></use></svg><span>学业</span>
-              </button>
-              <button class="chip" type="button" aria-pressed="false" data-theme="love">
-                <svg class="icon" aria-hidden="true"><use href="#icon-heart"></use></svg><span>桃花</span>
-              </button>
-              <button class="chip" type="button" aria-pressed="false" data-theme="health">
-                <svg class="icon" aria-hidden="true"><use href="#icon-shield"></use></svg><span>健康</span>
-              </button>
-              <button class="chip" type="button" aria-pressed="false" data-theme="career">
-                <svg class="icon" aria-hidden="true"><use href="#icon-briefcase"></use></svg><span>事业</span>
-              </button>
-            </div>
-            <p class="hint">可多选，也可以不选；不选时会按出生星座与五行做综合推荐。</p>
+          <div class="mode-panel" id="quizModePanel" role="tabpanel" aria-labelledby="quizModeTab" hidden>
+            <div class="quiz-list" id="quizList" aria-label="直觉问答"></div>
+            <p class="hint">每题选一个答案；系统会按节奏、饰品期待、场景偏好、外在印象和触感倾向推荐水晶。</p>
           </div>
 
           <div class="submit-row">
@@ -1198,9 +1372,70 @@
     </main>
   </div>
 
+  <div class="metric-dialog" id="metricDialog" role="dialog" aria-modal="true" aria-labelledby="metricDialogTitle" aria-hidden="true">
+    <div class="metric-dialog-card">
+      <h3 id="metricDialogTitle">指标说明</h3>
+      <p id="metricDialogBody"></p>
+      <button class="metric-dialog-close" id="metricDialogClose" type="button">知道了</button>
+    </div>
+  </div>
+
   <script>
     const themeLabels = { wealth: "财运", studies: "学业", love: "桃花", health: "健康", career: "事业" };
     const elementLabels = { wood: "木", fire: "火", earth: "土", metal: "金", water: "水" };
+    const modeLabels = { birth: "生辰推荐", quiz: "直觉问答" };
+    const quizQuestions = [
+      {
+        id: "pace",
+        title: "今天你更想带着哪种节奏？",
+        options: [
+          { label: "慢一点，先观察", traits: ["clear", "water", "wood"], themes: ["health", "studies"], elements: ["water", "wood"] },
+          { label: "稳一点，按计划来", traits: ["steady", "earth", "protect"], themes: ["career", "wealth"], elements: ["earth", "metal"] },
+          { label: "亮一点，多些存在感", traits: ["bright", "fire", "social"], themes: ["love", "career"], elements: ["fire"] },
+          { label: "快一点，直接行动", traits: ["sharp", "action", "metal"], themes: ["career", "wealth"], elements: ["metal", "fire"] }
+        ]
+      },
+      {
+        id: "accessory",
+        title: "今天如果戴一件饰品，你更希望它帮你？",
+        options: [
+          { label: "让气色更好", traits: ["bright", "fire", "vital"], themes: ["health", "love"], elements: ["fire"] },
+          { label: "让气场更稳", traits: ["steady", "protect", "earth"], themes: ["career", "wealth", "health"], elements: ["earth", "metal"] },
+          { label: "让人更想靠近", traits: ["soft", "social", "love"], themes: ["love"], elements: ["water", "wood"] },
+          { label: "让状态更清醒", traits: ["clear", "focus", "metal"], themes: ["studies", "career"], elements: ["metal", "water"] }
+        ]
+      },
+      {
+        id: "scene",
+        title: "你更容易被哪种场景吸引？",
+        options: [
+          { label: "阳光下的窗边", traits: ["bright", "open", "fire"], themes: ["career", "love"], elements: ["fire"] },
+          { label: "整齐的书桌", traits: ["focus", "order", "clear"], themes: ["studies", "career"], elements: ["metal", "earth"] },
+          { label: "绿意多的小路", traits: ["wood", "growth", "soft"], themes: ["health", "wealth"], elements: ["wood", "earth"] },
+          { label: "夜晚的灯光", traits: ["intuition", "water", "mystic"], themes: ["love", "health", "studies"], elements: ["water", "fire"] }
+        ]
+      },
+      {
+        id: "impression",
+        title: "你更希望别人今天感觉你？",
+        options: [
+          { label: "清爽", traits: ["clear", "clean", "metal"], themes: ["studies", "health"], elements: ["metal", "water"] },
+          { label: "温和", traits: ["soft", "social", "water"], themes: ["love", "health"], elements: ["water", "wood"] },
+          { label: "可靠", traits: ["steady", "earth", "protect"], themes: ["career", "wealth"], elements: ["earth", "metal"] },
+          { label: "有精神", traits: ["bright", "vital", "fire"], themes: ["career", "health", "love"], elements: ["fire"] }
+        ]
+      },
+      {
+        id: "touch",
+        title: "凭直觉选一个触感",
+        options: [
+          { label: "清透", traits: ["clear", "clean", "focus"], themes: ["studies", "health"], elements: ["metal", "water"] },
+          { label: "柔润", traits: ["soft", "love", "water"], themes: ["love", "health"], elements: ["water", "fire"] },
+          { label: "厚实", traits: ["steady", "earth", "protect"], themes: ["wealth", "career", "health"], elements: ["earth"] },
+          { label: "锋利", traits: ["sharp", "action", "metal"], themes: ["career", "wealth"], elements: ["metal", "fire"] }
+        ]
+      }
+    ];
     const elementNotes = {
       wood: "木主生发、学习与人缘，适合把注意力放在成长、关系舒展和新机会上。",
       fire: "火主热度、表达与吸引力，适合提升行动、气色、魅力和主动争取。",
@@ -1258,6 +1493,41 @@
       { name: "朱砂", slug: "cinnabar", themes: ["health", "career", "love"], elements: ["fire", "earth"], affinity: ["aries", "leo", "scorpio"], lucky: "朱砂红", luckyColor: "#c8281f", tone: "安神定心", tagline: "给心气补一点热度，也让状态更笃定。", base: "偏向定心、气色与行动热度", reason: "适合需要稳定心神、提升气色和持续行动力的阶段。" }
     ];
 
+    const crystalTraits = {
+      "super-seven": ["intuition", "mystic", "water", "fire", "soft"],
+      "green-phantom": ["growth", "wood", "earth", "steady", "wealth"],
+      "rutile-quartz": ["sharp", "action", "metal", "fire", "bright"],
+      "tourmaline": ["soft", "social", "wood", "fire", "vital"],
+      "gold-rutilated-quartz": ["sharp", "action", "metal", "earth", "bright"],
+      "rabbit-hair-quartz": ["soft", "fire", "warm", "love", "vital"],
+      turquoise: ["clear", "open", "wood", "water", "social"],
+      citrine: ["bright", "wealth", "fire", "earth", "open"],
+      "black-rutilated-quartz": ["protect", "sharp", "metal", "water", "steady"],
+      "garden-quartz": ["steady", "earth", "growth", "order", "wood"],
+      sunstone: ["bright", "fire", "vital", "social", "open"],
+      garnet: ["vital", "fire", "earth", "steady", "love"],
+      "southern-red-agate": ["vital", "fire", "earth", "steady", "warm"],
+      prehnite: ["soft", "wood", "water", "order", "health"],
+      amethyst: ["focus", "intuition", "water", "clear", "mystic"],
+      kunzite: ["soft", "love", "water", "fire", "social"],
+      rhodochrosite: ["soft", "love", "fire", "water", "warm"],
+      aquamarine: ["clear", "water", "social", "open", "focus"],
+      moonstone: ["soft", "water", "intuition", "love", "mystic"],
+      "tiger-eye": ["steady", "earth", "fire", "action", "protect"],
+      kyanite: ["clear", "focus", "metal", "water", "sharp"],
+      "green-striped-stone": ["growth", "wood", "earth", "soft", "health"],
+      "strawberry-quartz": ["soft", "love", "social", "fire", "bright"],
+      "lucky-gold-stone": ["bright", "wealth", "fire", "action", "open"],
+      "white-phantom": ["clear", "clean", "focus", "metal", "water"],
+      "clear-quartz": ["clear", "clean", "focus", "metal", "water"],
+      "rose-quartz": ["soft", "love", "social", "water", "fire"],
+      "gold-obsidian": ["protect", "wealth", "earth", "metal", "steady"],
+      "silver-obsidian": ["protect", "clear", "metal", "water", "focus"],
+      obsidian: ["protect", "steady", "water", "metal", "earth"],
+      "smoky-quartz": ["steady", "earth", "water", "protect", "order"],
+      cinnabar: ["vital", "fire", "earth", "protect", "warm"]
+    };
+
     const birthYear = document.querySelector("#birthYear");
     const birthMonth = document.querySelector("#birthMonth");
     const birthDay = document.querySelector("#birthDay");
@@ -1266,12 +1536,27 @@
     const resetButton = document.querySelector("#resetButton");
     const resultBody = document.querySelector("#resultBody");
     const themeButtons = [...document.querySelectorAll(".chip")];
+    const modeTabs = [...document.querySelectorAll(".mode-tab")];
+    const birthModePanel = document.querySelector("#birthModePanel");
+    const quizModePanel = document.querySelector("#quizModePanel");
+    const quizList = document.querySelector("#quizList");
+    const metricDialog = document.querySelector("#metricDialog");
+    const metricDialogTitle = document.querySelector("#metricDialogTitle");
+    const metricDialogBody = document.querySelector("#metricDialogBody");
+    const metricDialogClose = document.querySelector("#metricDialogClose");
     const selectedThemes = new Set();
+    const quizAnswers = {};
+    let activeMode = "birth";
     let timers = [];
     let carouselIndex = 0;
 
     initDateSelects();
+    renderQuiz();
     renderEmptyState();
+
+    modeTabs.forEach((button) => {
+      button.addEventListener("click", () => setMode(button.dataset.mode));
+    });
 
     themeButtons.forEach((button) => {
       button.addEventListener("click", () => {
@@ -1290,17 +1575,35 @@
     birthMonth.addEventListener("change", syncDays);
 
     resetButton.addEventListener("click", () => {
-      selectedThemes.clear();
-      themeButtons.forEach((button) => button.setAttribute("aria-pressed", "false"));
+      if (activeMode === "quiz") {
+        Object.keys(quizAnswers).forEach((key) => delete quizAnswers[key]);
+        document.querySelectorAll(".quiz-option").forEach((button) => button.setAttribute("aria-pressed", "false"));
+      } else {
+        selectedThemes.clear();
+        themeButtons.forEach((button) => button.setAttribute("aria-pressed", "false"));
+      }
     });
 
     form.addEventListener("submit", (event) => {
       event.preventDefault();
-      const date = new Date(Number(birthYear.value), Number(birthMonth.value) - 1, Number(birthDay.value), 12);
-      const themes = [...selectedThemes];
-      const profile = buildProfile(date);
-      const recommendations = getTopCrystals(profile, themes);
-      openReading(profile, themes, recommendations);
+      if (activeMode === "quiz") {
+        const missing = quizQuestions.find((question) => !quizAnswers[question.id]);
+        if (missing) {
+          const target = document.querySelector(`[data-question="${missing.id}"]`);
+          target?.scrollIntoView({ block: "nearest", behavior: "smooth" });
+          target?.focus();
+          return;
+        }
+        const profile = buildQuizProfile();
+        const recommendations = getTopCrystals(profile, profile.themes);
+        openReading(profile, profile.themes, recommendations);
+      } else {
+        const date = new Date(Number(birthYear.value), Number(birthMonth.value) - 1, Number(birthDay.value), 12);
+        const themes = [...selectedThemes];
+        const profile = buildProfile(date);
+        const recommendations = getTopCrystals(profile, themes);
+        openReading(profile, themes, recommendations);
+      }
     });
 
     resultBody.addEventListener("click", (event) => {
@@ -1308,6 +1611,12 @@
       if (arrow) {
         const direction = arrow.dataset.direction === "next" ? 1 : -1;
         setCarouselIndex(carouselIndex + direction);
+        return;
+      }
+
+      const metric = event.target.closest(".metric");
+      if (metric) {
+        openMetricDialog(metric.dataset.metricTitle, metric.dataset.metricBody);
         return;
       }
 
@@ -1321,6 +1630,18 @@
       panel.classList.toggle("is-open", !open);
       if (!open) {
         window.setTimeout(() => panel.scrollIntoView({ block: "nearest", behavior: "smooth" }), 40);
+      }
+    });
+
+    metricDialog.addEventListener("click", (event) => {
+      if (event.target === metricDialog) closeMetricDialog();
+    });
+
+    metricDialogClose.addEventListener("click", closeMetricDialog);
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && metricDialog.classList.contains("is-open")) {
+        closeMetricDialog();
       }
     });
 
@@ -1348,6 +1669,55 @@
       birthDay.value = String(Math.min(current, days));
     }
 
+    function setMode(mode) {
+      activeMode = mode;
+      modeTabs.forEach((button) => {
+        button.setAttribute("aria-selected", String(button.dataset.mode === mode));
+      });
+      birthModePanel.hidden = mode !== "birth";
+      quizModePanel.hidden = mode !== "quiz";
+      resetButton.textContent = mode === "quiz" ? "清空答案" : "清空祈愿";
+      submitButton.querySelector("span").textContent = mode === "quiz" ? "生成直觉推荐" : "生成今日推荐";
+    }
+
+    function openMetricDialog(title, body) {
+      metricDialogTitle.textContent = title || "指标说明";
+      metricDialogBody.textContent = body || "这个指标用于辅助理解本次推荐，不代表绝对结论。";
+      metricDialog.classList.add("is-open");
+      metricDialog.setAttribute("aria-hidden", "false");
+      metricDialogClose.focus();
+    }
+
+    function closeMetricDialog() {
+      metricDialog.classList.remove("is-open");
+      metricDialog.setAttribute("aria-hidden", "true");
+    }
+
+    function renderQuiz() {
+      quizList.innerHTML = quizQuestions.map((question, questionIndex) => `
+        <section class="quiz-question" aria-labelledby="quizQuestion${questionIndex + 1}">
+          <h3 id="quizQuestion${questionIndex + 1}">${questionIndex + 1}. ${question.title}</h3>
+          <div class="quiz-options">
+            ${question.options.map((option, optionIndex) => `
+              <button class="quiz-option" type="button" data-question="${question.id}" data-option="${optionIndex}" aria-pressed="false">
+                ${option.label}
+              </button>
+            `).join("")}
+          </div>
+        </section>
+      `).join("");
+
+      quizList.addEventListener("click", (event) => {
+        const button = event.target.closest(".quiz-option");
+        if (!button) return;
+        const questionId = button.dataset.question;
+        quizAnswers[questionId] = Number(button.dataset.option);
+        document.querySelectorAll(`.quiz-option[data-question="${questionId}"]`).forEach((item) => {
+          item.setAttribute("aria-pressed", String(item === button));
+        });
+      });
+    }
+
     function renderEmptyState() {
       resultBody.innerHTML = `
         <div class="empty-state">
@@ -1368,7 +1738,30 @@
       const stemElements = ["wood", "wood", "fire", "fire", "earth", "earth", "metal", "metal", "water", "water"];
       const stemIndex = mod(year - 4, 10);
       const element = stemElements[stemIndex];
-      return { zodiac, element, year, month, day };
+      return { mode: "birth", zodiac, element, year, month, day, traits: [], answers: [] };
+    }
+
+    function buildQuizProfile() {
+      const answers = quizQuestions.map((question) => {
+        const option = question.options[quizAnswers[question.id]];
+        return { question: question.title, label: option.label, ...option };
+      });
+      const traitCounts = tally(answers.flatMap((answer) => answer.traits || []));
+      const elementCounts = tally(answers.flatMap((answer) => answer.elements || []));
+      const themeCounts = tally(answers.flatMap((answer) => answer.themes || []));
+      const element = topKey(elementCounts) || "earth";
+      const themes = Object.entries(themeCounts).sort((a, b) => b[1] - a[1]).slice(0, 2).map(([key]) => key);
+      return {
+        mode: "quiz",
+        zodiac: "intuition",
+        element,
+        year: 1997,
+        month: 9,
+        day: 1,
+        themes,
+        answers,
+        traits: Object.entries(traitCounts).sort((a, b) => b[1] - a[1]).map(([key]) => key)
+      };
     }
 
     function getZodiac(month, day) {
@@ -1383,6 +1776,7 @@
     }
 
     function zodiacName(sign) {
+      if (sign === "intuition") return "直觉问答";
       return {
         aries: "白羊座", taurus: "金牛座", gemini: "双子座", cancer: "巨蟹座",
         leo: "狮子座", virgo: "处女座", libra: "天秤座", scorpio: "天蝎座",
@@ -1393,19 +1787,77 @@
     function getTopCrystals(profile, themes) {
       return crystals.map((crystal, index) => {
         const matchedThemes = themes.filter((theme) => crystal.themes.includes(theme));
+        const traits = crystalTraits[crystal.slug] || [];
+        const matchedTraits = (profile.traits || []).filter((trait) => traits.includes(trait));
         const themeScore = themes.length ? matchedThemes.length * 23 + (matchedThemes.length === themes.length ? 10 : 0) : 22;
         const elementScore = crystal.elements.includes(profile.element) ? 29 : 12;
-        const zodiacScore = crystal.affinity.includes(profile.zodiac) ? 21 : 9;
+        const zodiacScore = profile.mode === "quiz" ? Math.min(26, matchedTraits.length * 7) : (crystal.affinity.includes(profile.zodiac) ? 21 : 9);
         const rhythmScore = (profile.year + profile.month * 5 + profile.day + index * 7) % 8;
-        const score = Math.min(98, Math.max(62, themeScore + elementScore + zodiacScore + rhythmScore));
+        const score = Math.min(98, Math.max(62, themeScore + elementScore + zodiacScore + rhythmScore + (profile.mode === "quiz" ? 8 : 0)));
         const energy = Math.min(5, Math.max(3.4, Math.round((score / 20) * 10) / 10));
-        const basis = [
-          themes.length ? `祈愿对应：${matchedThemes.length ? matchedThemes.map((item) => themeLabels[item]).join("、") : "作为辅助能量补位"}` : "祈愿对应：综合平衡",
-          `五行对应：这款水晶偏${crystal.elements.map((item) => elementLabels[item]).join("、")}，${crystal.elements.includes(profile.element) ? "与你的五行气质同频" : "可作为互补能量"}`,
-          `星座气质：你的${zodiacName(profile.zodiac)}${crystal.affinity.includes(profile.zodiac) ? "与这款水晶的表达方式更贴近" : "可借这款水晶补足当下主题所需的能量"}`
-        ];
-        return { ...crystal, score, energy, basis };
+        const basis = profile.mode === "quiz"
+          ? buildQuizBasis(crystal, profile, matchedThemes, matchedTraits)
+          : buildBirthBasis(crystal, profile, themes, matchedThemes);
+        return { ...crystal, score, energy, basis, matchedThemes, matchedTraits };
       }).sort((a, b) => b.score - a.score).slice(0, 3);
+    }
+
+    function buildBirthBasis(crystal, profile, themes, matchedThemes) {
+      return [
+        themes.length ? `祈愿命中：${matchedThemes.length ? matchedThemes.map((item) => themeLabels[item]).join("、") : "这款更像辅助能量，补足当下没有被直接选择的部分"}` : "未限定祈愿时，会优先寻找日常佩戴更平衡的水晶。",
+        crystal.elements.includes(profile.element)
+          ? `五行同频：你本次年份五行偏${elementLabels[profile.element]}，${crystal.name}也带有${elementLabels[profile.element]}的倾向，适合顺势加强。`
+          : `五行互补：你本次年份五行偏${elementLabels[profile.element]}，${crystal.name}偏${crystal.elements.map((item) => elementLabels[item]).join("、")}，更像给状态补一个旁支支点。`,
+        crystal.affinity.includes(profile.zodiac)
+          ? `星座贴合：${zodiacName(profile.zodiac)}的气质和${crystal.name}的${crystal.tone}方向更接近。`
+          : `星座补位：${crystal.name}不是只看星座硬配，而是用${crystal.tone}去补今天更需要的节奏。`
+      ];
+    }
+
+    function buildQuizBasis(crystal, profile, matchedThemes, matchedTraits) {
+      const answerText = profile.answers.slice(0, 2).map((answer) => `“${answer.label}”`).join("、");
+      const traitText = matchedTraits.length ? matchedTraits.slice(0, 3).map(traitName).join("、") : "综合平衡";
+      return [
+        `直觉选项：你选择了${answerText}等倾向，系统把它们归纳为${traitText}。`,
+        matchedThemes.length
+          ? `主题靠近：这些答案更靠近${matchedThemes.map((item) => themeLabels[item]).join("、")}，${crystal.name}在这个方向上更容易发挥。`
+          : `主题补位：这款水晶没有强行贴某个单一主题，而是用于稳定整体状态。`,
+        crystal.elements.includes(profile.element)
+          ? `能量质地：本次问答偏${elementLabels[profile.element]}，${crystal.name}的属性也能接住这个节奏。`
+          : `能量质地：本次问答偏${elementLabels[profile.element]}，${crystal.name}提供的是另一种互补触感。`
+      ];
+    }
+
+    function tally(items) {
+      return items.reduce((map, item) => {
+        map[item] = (map[item] || 0) + 1;
+        return map;
+      }, {});
+    }
+
+    function topKey(map) {
+      return Object.entries(map).sort((a, b) => b[1] - a[1])[0]?.[0];
+    }
+
+    function traitName(trait) {
+      return {
+        clear: "清透感", clean: "清爽感", focus: "专注感", soft: "柔和感", social: "亲和感",
+        love: "靠近感", steady: "稳定感", protect: "守护感", bright: "明亮感", vital: "气色感",
+        sharp: "决断感", action: "行动感", growth: "生长感", order: "秩序感", intuition: "直觉感",
+        mystic: "神秘感", open: "开阔感", warm: "温暖感", wealth: "机会感",
+        wood: "木性", fire: "火性", earth: "土性", metal: "金性", water: "水性", health: "修复感"
+      }[trait] || trait;
+    }
+
+    function profileMainLabel(profile) {
+      return profile.mode === "quiz" ? "直觉问答" : zodiacName(profile.zodiac);
+    }
+
+    function profileDetailLabel(profile) {
+      if (profile.mode === "quiz") {
+        return `偏${elementLabels[profile.element]} · ${profile.traits.slice(0, 2).map(traitName).join("、")}`;
+      }
+      return `${zodiacName(profile.zodiac)} · 五行${elementLabels[profile.element]}`;
     }
 
     function openReading(profile, themes, recommendations) {
@@ -1448,12 +1900,14 @@
 
     function renderResult(profile, themes, recommendations) {
       carouselIndex = 0;
-      const themeText = themes.length ? themes.map((item) => themeLabels[item]).join("、") : "综合平衡";
+      const contextText = profile.mode === "quiz"
+        ? profile.traits.slice(0, 3).map(traitName).join("、")
+        : (themes.length ? themes.map((item) => themeLabels[item]).join("、") : "综合平衡");
       resultBody.innerHTML = `
         <div class="recommend-wrap carousel-shell">
           <div class="carousel-frame">
             <div class="carousel-track" id="carouselTrack">
-              ${recommendations.map((item, index) => renderCrystalSlide(item, index, profile, themeText)).join("")}
+              ${recommendations.map((item, index) => renderCrystalSlide(item, index, profile, contextText)).join("")}
             </div>
           </div>
           <div class="carousel-nav" aria-label="水晶推荐切换">
@@ -1476,8 +1930,9 @@
       updateCarousel();
     }
 
-    function renderCrystalSlide(item, index, profile, themeText) {
+    function renderCrystalSlide(item, index, profile, contextText) {
       const rank = index + 1;
+      const analysisLines = item.basis.map((line) => `<p>${line}</p>`).join("");
       return `
         <section class="carousel-slide" aria-label="Top ${rank} 水晶推荐">
           <article class="recommend-card">
@@ -1491,35 +1946,34 @@
               <p>${item.tagline}</p>
             </div>
             <div class="metric-grid">
-              <div class="metric" style="--lucky-color:${item.luckyColor}">
+              <button class="metric" type="button" style="--lucky-color:${item.luckyColor}" data-metric-title="幸运色" data-metric-body="幸运色会参考推荐水晶的主色、五行倾向和本次主题。它更适合作为今天穿搭、配饰或桌面小物的色彩灵感，不是硬性规则。">
                 ${iconUse("icon-palette")}
                 <b>幸运色</b>
                 <span><i class="lucky-dot"></i>${item.lucky}</span>
-              </div>
-              <div class="metric">
+              </button>
+              <button class="metric" type="button" data-metric-title="能量评分" data-metric-body="能量评分代表这款水晶在今天结果里的综合强度，主要参考主题命中、五行贴合、星座或问答倾向，以及少量日期节奏。">
                 ${iconUse("icon-spark")}
                 <b>能量评分</b>
                 <span class="big">${item.energy.toFixed(1)}</span>
-              </div>
-              <div class="metric">
+              </button>
+              <button class="metric" type="button" data-metric-title="适配指数" data-metric-body="适配指数表示这款水晶和本次输入的贴合程度。生辰模式会看出生日期推算出的星座与五行；直觉问答会看你的选项倾向。">
                 ${iconUse("icon-gauge")}
                 <b>适配指数</b>
                 <span class="big">${item.score}%</span>
-              </div>
-              <div class="metric">
+              </button>
+              <button class="metric" type="button" data-metric-title="命盘要点" data-metric-body="这里展示本次推荐最关键的判断入口。生辰模式会显示星座与五行；直觉问答会显示答案归纳出的主要倾向。">
                 ${iconUse("icon-star-map")}
                 <b>命盘要点</b>
-                <span>${zodiacName(profile.zodiac)} · 五行${elementLabels[profile.element]}</span>
-              </div>
+                <span>${profileDetailLabel(profile)}</span>
+              </button>
             </div>
             <button class="analysis-toggle" type="button" aria-expanded="false" aria-controls="analysisPanel${index}">
               ${iconUse("icon-info")}查看能量解析
             </button>
             <div class="analysis-panel" id="analysisPanel${index}">
-              <strong>${zodiacName(profile.zodiac)}</strong>：${zodiacNotes[profile.zodiac]}<br>
-              <strong>五行属${elementLabels[profile.element]}</strong>：${elementNotes[profile.element]}<br>
-              <strong>本次祈愿</strong>：${themeText}。${item.base}，因此推荐 ${item.name}。<br>
-              <strong>适配度说明</strong>：${item.basis.join("；")}。最终百分比由祈愿主题、五行对应、星座气质和日期节奏权重综合得出。
+              <strong>${item.name} · ${item.tone}</strong>
+              ${analysisLines}
+              <p>${profile.mode === "quiz" ? `本次模式：${modeLabels.quiz}，结果来自 5 个选择的综合倾向。` : `${profileMainLabel(profile)}：${zodiacNotes[profile.zodiac]} 五行属${elementLabels[profile.element]}：${elementNotes[profile.element]}`}</p>
             </div>
           </article>
         </section>
