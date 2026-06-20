@@ -26,6 +26,10 @@
 
     * { box-sizing: border-box; }
 
+    [hidden] {
+      display: none !important;
+    }
+
     html { min-height: 100%; background: var(--bg); }
 
     body {
@@ -133,6 +137,18 @@
       padding: clamp(14px, 4vw, 52px) 0 22px;
     }
 
+    body.is-home .workspace {
+      grid-template-columns: minmax(300px, 560px);
+      justify-content: center;
+      min-height: calc(100dvh - 96px);
+    }
+
+    body.is-quiz-flow .workspace {
+      grid-template-columns: minmax(320px, 620px);
+      justify-content: center;
+      min-height: calc(100dvh - 96px);
+    }
+
     .panel {
       position: relative;
       background: rgba(237, 243, 247, .96);
@@ -143,6 +159,12 @@
 
     .input-panel {
       padding: clamp(22px, 4vw, 42px);
+      transition: transform .42s var(--ease), opacity .32s ease, padding .32s ease;
+    }
+
+    body.is-home .input-panel {
+      padding: clamp(38px, 6vw, 62px);
+      animation: homeCardIn .52s var(--ease) both;
     }
 
     .intro-pill {
@@ -185,9 +207,37 @@
       font-weight: 500;
     }
 
+    body.is-home .subhead,
+    body.is-home .trust-row,
+    body.is-home .result-panel,
+    body.is-home .top-note,
+    body.is-home .restart {
+      display: none;
+    }
+
+    body.is-quiz-flow .input-panel,
+    body.is-quiz-flow .top-note {
+      display: none;
+    }
+
+    body.is-home h1 {
+      font-size: clamp(38px, 6.4vw, 58px);
+      text-align: center;
+    }
+
+    body.is-home .intro-pill {
+      margin-inline: auto;
+      margin-bottom: 30px;
+    }
+
     .form {
       display: grid;
       gap: 18px;
+    }
+
+    body:not(.is-home) .form {
+      gap: 22px;
+      margin-top: 34px;
     }
 
     .field {
@@ -198,6 +248,11 @@
       border: 1px solid rgba(255, 255, 255, .72);
       border-radius: 24px;
       box-shadow: var(--inset);
+    }
+
+    body:not(.is-home) .field {
+      gap: 16px;
+      padding: clamp(18px, 2.4vw, 24px);
     }
 
     .field-label,
@@ -323,9 +378,29 @@
       box-shadow: var(--inset);
     }
 
+    body.is-home .mode-switch {
+      gap: 18px;
+      margin: 44px 0 0;
+      padding: 16px;
+      border-radius: 30px;
+    }
+
     .home-panel {
       display: grid;
       gap: 14px;
+    }
+
+    body.is-home .home-panel {
+      animation: choiceRise .46s .08s var(--ease) both;
+    }
+
+    body:not(.is-home) .home-panel {
+      display: none;
+    }
+
+    body:not(.is-home) .form,
+    body:not(.is-home) .result-panel {
+      animation: panelReveal .42s var(--ease) both;
     }
 
     .mode-tab {
@@ -351,6 +426,17 @@
       background: var(--surface);
       box-shadow: var(--shadow-sm);
       font-size: 18px;
+    }
+
+    body.is-home .mode-choice {
+      min-height: 124px;
+      border-radius: 24px;
+      font-size: 20px;
+    }
+
+    body.is-home .mode-choice .icon {
+      width: 32px;
+      height: 32px;
     }
 
     .mode-choice .icon {
@@ -385,6 +471,27 @@
       box-shadow: var(--shadow-sm);
     }
 
+    body.is-quiz-flow .result-panel {
+      width: min(100%, 620px);
+      height: auto;
+      min-height: 520px;
+    }
+
+    body.is-quiz-flow .result-head {
+      display: none;
+    }
+
+    body.is-quiz-flow .result-body {
+      padding: 0;
+      min-height: 520px;
+    }
+
+    body.is-quiz-flow .quiz-step-card {
+      min-height: 520px;
+      padding: clamp(30px, 5vw, 50px);
+      border-radius: 32px;
+    }
+
     .quiz-step-top {
       display: flex;
       align-items: center;
@@ -411,6 +518,23 @@
       padding: 0 18px;
       font-size: 16px;
       text-align: left;
+    }
+
+    .quiz-step-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      align-items: center;
+      margin-top: 2px;
+    }
+
+    .quiz-step-actions .reset,
+    .quiz-step-actions .submit {
+      min-height: 54px;
+    }
+
+    .quiz-step-actions .home-return {
+      grid-column: 1 / -1;
     }
 
     .quiz-question {
@@ -463,10 +587,10 @@
 
     .submit-row {
       display: grid;
-      grid-template-columns: 1fr auto;
+      grid-template-columns: minmax(0, 1fr) auto;
       gap: 14px;
       align-items: center;
-      margin-top: 4px;
+      margin-top: 10px;
     }
 
     .submit {
@@ -527,6 +651,21 @@
     .carousel-arrow:focus-visible {
       outline: 3px solid rgba(134, 169, 189, .38);
       outline-offset: 3px;
+    }
+
+    @keyframes homeCardIn {
+      from { opacity: 0; transform: translateY(16px) scale(.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    @keyframes choiceRise {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes panelReveal {
+      from { opacity: 0; transform: translateY(14px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     .trust-row {
@@ -994,6 +1133,10 @@
       padding: 12px 16px 10px;
     }
 
+    .metric-grid.is-compact {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
     .metric {
       width: 100%;
       min-height: 82px;
@@ -1215,6 +1358,12 @@
         padding-top: 18px;
       }
 
+      body.is-home .workspace {
+        grid-template-columns: minmax(0, 560px);
+        align-items: center;
+        min-height: calc(100dvh - 92px);
+      }
+
       .result-panel {
         width: 100%;
         height: min(720px, calc(100dvh - 40px));
@@ -1232,12 +1381,18 @@
       .top-note { display: none; }
       .input-panel,
       .result-panel { padding: 18px; border-radius: 26px; }
+      body.is-home .input-panel { padding: 24px 18px; }
+      body.is-home .intro-pill { margin-bottom: 24px; }
+      body:not(.is-home) .form { margin-top: 26px; gap: 18px; }
+      body:not(.is-home) .field { padding: 18px; }
       h1 { font-size: 42px; }
       .subhead { margin-bottom: 22px; font-size: 16px; line-height: 1.7; }
       .date-grid { grid-template-columns: 1fr; }
       .themes { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .chip:last-child { grid-column: 1 / -1; }
       .submit-row { grid-template-columns: 1fr; }
+      body.is-home .mode-switch { grid-template-columns: 1fr; gap: 12px; margin-top: 30px; padding: 12px; }
+      body.is-home .mode-choice { min-height: 98px; }
       .reset { width: 100%; }
       .result-head { align-items: flex-start; }
       .ethical-pill { white-space: normal; text-align: center; }
@@ -1340,7 +1495,6 @@
         <svg class="icon" aria-hidden="true"><use href="#icon-info"></use></svg>
         <span>娱乐灵感参考，不替代专业建议</span>
       </div>
-      <button class="reset restart" id="restartButton" type="button">刷新</button>
     </header>
 
     <main class="workspace">
@@ -1350,7 +1504,6 @@
           <span>Crystal Reading</span>
         </div>
         <h1 id="brandTitle">今日水晶<span class="headline-soft">能量建议</span></h1>
-        <p class="subhead">输入出生年月日，选择今天想照顾的方向。系统会用星座、五行与祈愿主题，生成 Top 3 水晶建议。</p>
 
         <div class="home-panel" id="homePanel">
           <div class="mode-switch" aria-label="选择推荐方式">
@@ -1363,7 +1516,6 @@
             <span>直觉回答</span>
           </button>
           </div>
-          <p class="hint">先选择一种方式。生辰推荐会根据生日、星座与五行推算；直觉回答会在右侧一步一步提问，选完自动生成结果。</p>
         </div>
 
         <form class="form" id="readingForm" hidden>
@@ -1645,17 +1797,7 @@
     birthYear.addEventListener("change", syncDays);
     birthMonth.addEventListener("change", syncDays);
 
-    resetButton.addEventListener("click", () => {
-      if (activeMode === "quiz") {
-        Object.keys(quizAnswers).forEach((key) => delete quizAnswers[key]);
-        document.querySelectorAll(".quiz-option").forEach((button) => button.setAttribute("aria-pressed", "false"));
-      } else {
-        selectedThemes.clear();
-        themeButtons.forEach((button) => button.setAttribute("aria-pressed", "false"));
-      }
-    });
-
-    document.querySelector("#restartButton").addEventListener("click", resetExperience);
+    resetButton.addEventListener("click", resetExperience);
 
     form.addEventListener("submit", (event) => {
       event.preventDefault();
@@ -1684,11 +1826,40 @@
       if (stepOption && activeMode === "quiz") {
         const question = quizQuestions[quizStep];
         quizAnswers[question.id] = Number(stepOption.dataset.stepOption);
-        stepOption.setAttribute("aria-pressed", "true");
+        renderQuizStep();
         window.setTimeout(() => {
-          quizStep += 1;
+          if (quizStep < quizQuestions.length - 1) {
+            quizStep += 1;
+            renderQuizStep();
+          } else {
+            const profile = buildQuizProfile();
+            const recommendations = getTopCrystals(profile, profile.themes);
+            openReading(profile, profile.themes, recommendations);
+          }
+        }, 260);
+        return;
+      }
+
+      const quizNav = event.target.closest("[data-quiz-nav]");
+      if (quizNav && activeMode === "quiz") {
+        const action = quizNav.dataset.quizNav;
+        if (action === "prev") {
+          quizStep = Math.max(0, quizStep - 1);
           renderQuizStep();
-        }, 180);
+        } else if (action === "home") {
+          resetExperience();
+        } else if (action === "next") {
+          const question = quizQuestions[quizStep];
+          if (quizAnswers[question.id] === undefined) return;
+          quizStep = Math.min(quizQuestions.length - 1, quizStep + 1);
+          renderQuizStep();
+        } else if (action === "generate") {
+          const question = quizQuestions[quizStep];
+          if (quizAnswers[question.id] === undefined) return;
+          const profile = buildQuizProfile();
+          const recommendations = getTopCrystals(profile, profile.themes);
+          openReading(profile, profile.themes, recommendations);
+        }
         return;
       }
 
@@ -1768,6 +1939,8 @@
 
     function setMode(mode) {
       activeMode = mode;
+      document.body.classList.remove("is-home");
+      document.body.classList.toggle("is-quiz-flow", mode === "quiz");
       modeTabs.forEach((button) => {
         button.setAttribute("aria-selected", String(button.dataset.mode === mode));
       });
@@ -1775,8 +1948,9 @@
       form.hidden = false;
       birthModePanel.hidden = mode !== "birth";
       quizModePanel.hidden = true;
-      resetButton.textContent = mode === "quiz" ? "清空答案" : "清空祈愿";
-      submitButton.querySelector("span").textContent = mode === "quiz" ? "生成直觉推荐" : "生成今日推荐";
+      submitButton.closest(".submit-row").hidden = mode === "quiz";
+      resetButton.textContent = "\u8fd4\u56de\u9996\u9875";
+      submitButton.querySelector("span").textContent = mode === "quiz" ? "\u751f\u6210\u76f4\u89c9\u63a8\u8350" : "\u751f\u6210\u4eca\u65e5\u63a8\u8350";
     }
 
     function startMode(mode) {
@@ -1796,6 +1970,8 @@
 
     function resetExperience() {
       clearTimers();
+      document.body.classList.add("is-home");
+      document.body.classList.remove("is-quiz-flow");
       activeMode = null;
       screenState = "home";
       quizStep = 0;
@@ -1809,9 +1985,10 @@
       form.hidden = true;
       birthModePanel.hidden = true;
       quizModePanel.hidden = true;
+      submitButton.closest(".submit-row").hidden = false;
       submitButton.disabled = false;
-      resetButton.textContent = "清空祈愿";
-      submitButton.querySelector("span").textContent = "生成今日推荐";
+      resetButton.textContent = "\u8fd4\u56de\u9996\u9875";
+      submitButton.querySelector("span").textContent = "\u751f\u6210\u4eca\u65e5\u63a8\u8350";
       initDateSelects(true);
       renderHomeState();
     }
@@ -1848,6 +2025,8 @@
         openReading(profile, profile.themes, recommendations);
         return;
       }
+      const selected = quizAnswers[question.id];
+      const isLast = quizStep === quizQuestions.length - 1;
       resultBody.innerHTML = `
         <article class="quiz-step-card">
           <div class="quiz-step-top">
@@ -1857,16 +2036,21 @@
           <h2>${question.title}</h2>
           <div class="quiz-options" role="group" aria-label="${question.title}">
             ${question.options.map((option, optionIndex) => `
-              <button class="quiz-option" type="button" data-step-option="${optionIndex}">
+              <button class="quiz-option" type="button" data-step-option="${optionIndex}" aria-pressed="${String(selected === optionIndex)}">
                 ${option.label}
               </button>
             `).join("")}
           </div>
-          <p class="hint">凭第一感觉选一个，选完会自动进入下一题。</p>
+          <div class="quiz-step-actions">
+            <button class="reset" type="button" data-quiz-nav="prev" ${quizStep === 0 ? "disabled" : ""}>上一题</button>
+            <button class="${isLast ? "submit" : "reset"}" type="button" data-quiz-nav="${isLast ? "generate" : "next"}" ${selected === undefined ? "disabled" : ""}>
+              ${isLast ? `${iconUse("icon-spark")}生成推荐` : "下一题"}
+            </button>
+            <button class="reset home-return" type="button" data-quiz-nav="home">回到首页</button>
+          </div>
         </article>
       `;
     }
-
     function openMetricDialog(title, body) {
       metricDialogTitle.textContent = title || "指标说明";
       metricDialogBody.textContent = body || "这个指标用于辅助理解本次推荐，不代表绝对结论。";
@@ -2050,25 +2234,25 @@
     function openReading(profile, themes, recommendations) {
       clearTimers();
       submitButton.disabled = true;
-      renderLoadingState();
+      renderLoadingState(profile);
       typeText(profile.mode === "quiz"
-        ? "正在整理你的直觉回答，请稍候。系统正在把节奏、场景、印象与触感倾向合并校准。"
+        ? "正在整理你的直觉答案，请稍候。系统会把节奏、场景、印象与触感倾向合并，筛出更贴近当下状态的水晶。"
         : "正在推算命理五行，请稍候。系统正在把出生日期、星座气质与今日祈愿合并校准。",
         document.querySelector("#statusText"), 54);
-      runProgress(5200, () => {
+      runProgress(5200, profile, () => {
         submitButton.disabled = false;
         renderResult(profile, themes, recommendations);
       });
     }
 
-    function renderLoadingState() {
+    function renderLoadingState(profile) {
       resultBody.innerHTML = `
         <div class="loading-state">
           <article class="loading-card">
             <div class="loading-top">
               <div class="pulse-gem">${iconUse("icon-logo")}</div>
               <div>
-                <h2>正在推算命理五行</h2>
+                <h2>${profile.mode === "quiz" ? "正在整理直觉倾向" : "正在推算命理五行"}</h2>
                 <p id="statusText"></p>
               </div>
             </div>
@@ -2085,7 +2269,7 @@
           </article>
         </div>
       `;
-      renderStageList("读取出生年月日");
+      renderStageList(profile.mode === "quiz" ? "读取直觉答案" : "读取出生年月日", profile.mode);
     }
 
     function renderResult(profile, themes, recommendations) {
@@ -2123,39 +2307,51 @@
     function renderCrystalSlide(item, index, profile, contextText) {
       const rank = index + 1;
       const analysisLines = item.basis.map((line) => `<p>${line}</p>`).join("");
+      const metricCards = profile.mode === "quiz" ? `
+              <button class="metric" type="button" style="--lucky-color:${item.luckyColor}" data-metric-title="幸运色" data-metric-body="幸运色参考推荐水晶的主色、当前直觉倾向和整体气质。它更适合作为今天穿搭、配饰或桌面小物的色彩灵感。">
+                ${iconUse("icon-palette")}
+                <b>幸运色</b>
+                <span><i class="lucky-dot"></i>${item.lucky}</span>
+              </button>
+              <button class="metric" type="button" data-metric-title="直觉要点" data-metric-body="这里展示本次问答归纳出的主要倾向。系统会把你的节奏、饰品期待、场景偏好、外在印象和触感选择合并后再匹配水晶。">
+                ${iconUse("icon-star-map")}
+                <b>直觉要点</b>
+                <span>${profileDetailLabel(profile)}</span>
+              </button>` : `
+              <button class="metric" type="button" style="--lucky-color:${item.luckyColor}" data-metric-title="幸运色" data-metric-body="幸运色会参考推荐水晶的主色、五行倾向和本次主题。它更适合作为今天穿搭、配饰或桌面小物的色彩灵感，不是硬性规则。">
+                ${iconUse("icon-palette")}
+                <b>幸运色</b>
+                <span><i class="lucky-dot"></i>${item.lucky}</span>
+              </button>
+              <button class="metric" type="button" data-metric-title="能量评分" data-metric-body="能量评分代表这款水晶在今天结果里的综合强度，主要参考主题命中、五行贴合、星座倾向，以及少量日期节奏。">
+                ${iconUse("icon-spark")}
+                <b>能量评分</b>
+                <span class="big">${item.energy.toFixed(1)}</span>
+              </button>
+              <button class="metric" type="button" data-metric-title="适配指数" data-metric-body="适配指数表示这款水晶和本次生辰输入的贴合程度，会看出生日期推算出的星座与五行，再结合今日祈愿。">
+                ${iconUse("icon-gauge")}
+                <b>适配指数</b>
+                <span class="big">${item.score}%</span>
+              </button>
+              <button class="metric" type="button" data-metric-title="命盘要点" data-metric-body="这里展示本次推荐最关键的判断入口：出生日期推算出的星座与五行，以及今日祈愿。">
+                ${iconUse("icon-star-map")}
+                <b>命盘要点</b>
+                <span>${profileDetailLabel(profile)}</span>
+              </button>`;
       return `
         <section class="carousel-slide" aria-label="Top ${rank} 水晶推荐">
           <article class="recommend-card">
             <div class="recommend-top">
               <div class="recommend-label">${iconUse("icon-spark")}${index === 0 ? "今日为你推荐" : "备选推荐"}</div>
-              <div class="score-bubble"><span>${item.score}%</span><small>适配度</small></div>
+              ${profile.mode === "quiz" ? "" : `<div class="score-bubble"><span>${item.score}%</span><small>适配度</small></div>`}
             </div>
             <img class="crystal-photo" src="assets/${item.slug}.webp" alt="${item.name}实物手链图" width="960" height="620" loading="${index === 0 ? "eager" : "lazy"}" decoding="async" fetchpriority="${index === 0 ? "high" : "low"}" />
             <div class="hero-copy">
               <h2>${item.name} · ${item.tone}</h2>
               <p>${item.tagline}</p>
             </div>
-            <div class="metric-grid">
-              <button class="metric" type="button" style="--lucky-color:${item.luckyColor}" data-metric-title="幸运色" data-metric-body="幸运色会参考推荐水晶的主色、五行倾向和本次主题。它更适合作为今天穿搭、配饰或桌面小物的色彩灵感，不是硬性规则。">
-                ${iconUse("icon-palette")}
-                <b>幸运色</b>
-                <span><i class="lucky-dot"></i>${item.lucky}</span>
-              </button>
-              <button class="metric" type="button" data-metric-title="能量评分" data-metric-body="能量评分代表这款水晶在今天结果里的综合强度，主要参考主题命中、五行贴合、星座或问答倾向，以及少量日期节奏。">
-                ${iconUse("icon-spark")}
-                <b>能量评分</b>
-                <span class="big">${item.energy.toFixed(1)}</span>
-              </button>
-              <button class="metric" type="button" data-metric-title="适配指数" data-metric-body="适配指数表示这款水晶和本次输入的贴合程度。生辰模式会看出生日期推算出的星座与五行；直觉问答会看你的选项倾向。">
-                ${iconUse("icon-gauge")}
-                <b>适配指数</b>
-                <span class="big">${item.score}%</span>
-              </button>
-              <button class="metric" type="button" data-metric-title="命盘要点" data-metric-body="这里展示本次推荐最关键的判断入口。生辰模式会显示星座与五行；直觉问答会显示答案归纳出的主要倾向。">
-                ${iconUse("icon-star-map")}
-                <b>命盘要点</b>
-                <span>${profileDetailLabel(profile)}</span>
-              </button>
+            <div class="metric-grid ${profile.mode === "quiz" ? "is-compact" : ""}">
+              ${metricCards}
             </div>
             <button class="analysis-toggle" type="button" aria-expanded="false" aria-controls="analysisPanel${index}">
               ${iconUse("icon-info")}查看能量解析
@@ -2163,7 +2359,7 @@
             <div class="analysis-panel" id="analysisPanel${index}">
               <strong>${item.name} · ${item.tone}</strong>
               ${analysisLines}
-              <p>${profile.mode === "quiz" ? `本次模式：${modeLabels.quiz}，结果来自 5 个选择的综合倾向。` : `${profileMainLabel(profile)}：${zodiacNotes[profile.zodiac]} 五行属${elementLabels[profile.element]}：${elementNotes[profile.element]}`}</p>
+              <p>${profile.mode === "quiz" ? `本次模式：${modeLabels.quiz}，结果来自 5 个选择的综合倾向。` : `${profileMainLabel(profile)}，${zodiacNotes[profile.zodiac]} 五行属${elementLabels[profile.element]}，${elementNotes[profile.element]}`}</p>
             </div>
           </article>
         </section>
@@ -2198,18 +2394,9 @@
       });
     }
 
-    function runProgress(duration, done) {
+    function runProgress(duration, profile, done) {
       const start = performance.now();
-      const checkpoints = [
-        { at: 0, p: 3, text: "读取出生年月日" },
-        { at: 520, p: 12, text: "换算太阳星座" },
-        { at: 1160, p: 27, text: "计算年份五行" },
-        { at: 1780, p: 39, text: "校验今日祈愿" },
-        { at: 2640, p: 56, text: "匹配水晶属性" },
-        { at: 3420, p: 70, text: "评估能量评分" },
-        { at: 4380, p: 88, text: "生成适配解析" },
-        { at: 5050, p: 100, text: "完成推荐" }
-      ];
+      const checkpoints = getProgressCheckpoints(profile.mode);
       let cursor = 0;
       const timer = setInterval(() => {
         const elapsed = performance.now() - start;
@@ -2223,7 +2410,7 @@
         document.querySelector("#progressStage").textContent = current.text;
         document.querySelector("#progressPercent").textContent = `${progress}%`;
         document.querySelector("#progressBar").style.width = `${progress}%`;
-        renderStageList(current.text);
+        renderStageList(current.text, profile.mode);
         if (elapsed >= duration) {
           clearInterval(timer);
           document.querySelector("#progressStage").textContent = "完成推荐";
@@ -2235,11 +2422,33 @@
       timers.push(timer);
     }
 
-    function renderStageList(activeText) {
+    function getProgressCheckpoints(mode) {
+      return mode === "quiz" ? [
+        { at: 0, p: 3, text: "读取直觉答案" },
+        { at: 620, p: 14, text: "归纳选择倾向" },
+        { at: 1320, p: 30, text: "识别节奏偏好" },
+        { at: 2120, p: 48, text: "匹配水晶气质" },
+        { at: 3040, p: 66, text: "筛选今日推荐" },
+        { at: 4100, p: 86, text: "生成直觉解析" },
+        { at: 5050, p: 100, text: "完成推荐" }
+      ] : [
+        { at: 0, p: 3, text: "读取出生年月日" },
+        { at: 520, p: 12, text: "换算太阳星座" },
+        { at: 1160, p: 27, text: "计算年份五行" },
+        { at: 1780, p: 39, text: "校验今日祈愿" },
+        { at: 2640, p: 56, text: "匹配水晶属性" },
+        { at: 3420, p: 70, text: "评估能量评分" },
+        { at: 4380, p: 88, text: "生成适配解析" },
+        { at: 5050, p: 100, text: "完成推荐" }
+      ];
+    }
+
+    function renderStageList(activeText, mode) {
       const list = document.querySelector("#stageList");
       if (!list) return;
-      const stages = ["读取出生年月日", "换算太阳星座", "计算年份五行", "校验今日祈愿", "匹配水晶属性", "评估能量评分", "生成适配解析"];
-      list.innerHTML = stages.slice(Math.max(0, stages.indexOf(activeText) - 2), stages.indexOf(activeText) + 3)
+      const stages = getProgressCheckpoints(mode).map((stage) => stage.text);
+      const activeIndex = Math.max(0, stages.indexOf(activeText));
+      list.innerHTML = stages.slice(Math.max(0, activeIndex - 2), activeIndex + 3)
         .map((stage) => `<li class="${stage === activeText ? "is-active" : ""}"><span class="stage-dot"></span>${stage}</li>`)
         .join("");
     }
