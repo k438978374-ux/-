@@ -323,6 +323,11 @@
       box-shadow: var(--inset);
     }
 
+    .home-panel {
+      display: grid;
+      gap: 14px;
+    }
+
     .mode-tab {
       display: inline-flex;
       align-items: center;
@@ -339,6 +344,20 @@
       transition: transform .18s var(--ease), box-shadow .18s ease, color .18s ease, background .18s ease;
     }
 
+    .mode-choice {
+      min-height: 86px;
+      flex-direction: column;
+      gap: 10px;
+      background: var(--surface);
+      box-shadow: var(--shadow-sm);
+      font-size: 18px;
+    }
+
+    .mode-choice .icon {
+      width: 28px;
+      height: 28px;
+    }
+
     .mode-tab[aria-selected="true"] {
       color: #fff;
       background: var(--accent);
@@ -352,6 +371,46 @@
     .quiz-list {
       display: grid;
       gap: 14px;
+    }
+
+    .quiz-step-card {
+      display: grid;
+      align-content: center;
+      gap: 18px;
+      height: 100%;
+      padding: clamp(20px, 4vw, 38px);
+      background: rgba(245, 248, 251, .68);
+      border: 1px solid rgba(255, 255, 255, .78);
+      border-radius: 28px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .quiz-step-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 850;
+    }
+
+    .quiz-step-card h2 {
+      margin: 0;
+      color: var(--ink);
+      font-size: clamp(24px, 4vw, 36px);
+      line-height: 1.2;
+    }
+
+    .quiz-step-card .quiz-options {
+      grid-template-columns: 1fr;
+    }
+
+    .quiz-step-card .quiz-option {
+      min-height: 58px;
+      padding: 0 18px;
+      font-size: 16px;
+      text-align: left;
     }
 
     .quiz-question {
@@ -448,6 +507,11 @@
       box-shadow: var(--shadow-sm);
       cursor: pointer;
       font-weight: 850;
+    }
+
+    .restart {
+      min-height: 44px;
+      white-space: nowrap;
     }
 
     select:focus-visible,
@@ -1276,6 +1340,7 @@
         <svg class="icon" aria-hidden="true"><use href="#icon-info"></use></svg>
         <span>娱乐灵感参考，不替代专业建议</span>
       </div>
+      <button class="reset restart" id="restartButton" type="button">刷新</button>
     </header>
 
     <main class="workspace">
@@ -1287,18 +1352,21 @@
         <h1 id="brandTitle">今日水晶<span class="headline-soft">能量建议</span></h1>
         <p class="subhead">输入出生年月日，选择今天想照顾的方向。系统会用星座、五行与祈愿主题，生成 Top 3 水晶建议。</p>
 
-        <div class="mode-switch" role="tablist" aria-label="推荐模式">
-          <button class="mode-tab" id="birthModeTab" type="button" role="tab" aria-selected="true" aria-controls="birthModePanel" data-mode="birth">
+        <div class="home-panel" id="homePanel">
+          <div class="mode-switch" aria-label="选择推荐方式">
+            <button class="mode-tab mode-choice" id="birthModeTab" type="button" data-mode="birth">
             <svg class="icon" aria-hidden="true"><use href="#icon-calendar"></use></svg>
             <span>生辰推荐</span>
           </button>
-          <button class="mode-tab" id="quizModeTab" type="button" role="tab" aria-selected="false" aria-controls="quizModePanel" data-mode="quiz">
+            <button class="mode-tab mode-choice" id="quizModeTab" type="button" data-mode="quiz">
             <svg class="icon" aria-hidden="true"><use href="#icon-spark"></use></svg>
-            <span>直觉问答</span>
+            <span>直觉回答</span>
           </button>
+          </div>
+          <p class="hint">先选择一种方式。生辰推荐会根据生日、星座与五行推算；直觉回答会在右侧一步一步提问，选完自动生成结果。</p>
         </div>
 
-        <form class="form" id="readingForm">
+        <form class="form" id="readingForm" hidden>
           <div class="mode-panel" id="birthModePanel" role="tabpanel" aria-labelledby="birthModeTab">
             <div class="field">
               <label class="field-label" for="birthYear">
@@ -1537,6 +1605,7 @@
     const resultBody = document.querySelector("#resultBody");
     const themeButtons = [...document.querySelectorAll(".chip")];
     const modeTabs = [...document.querySelectorAll(".mode-tab")];
+    const homePanel = document.querySelector("#homePanel");
     const birthModePanel = document.querySelector("#birthModePanel");
     const quizModePanel = document.querySelector("#quizModePanel");
     const quizList = document.querySelector("#quizList");
@@ -1546,16 +1615,18 @@
     const metricDialogClose = document.querySelector("#metricDialogClose");
     const selectedThemes = new Set();
     const quizAnswers = {};
-    let activeMode = "birth";
+    let activeMode = null;
+    let screenState = "home";
+    let quizStep = 0;
     let timers = [];
     let carouselIndex = 0;
 
     initDateSelects();
     renderQuiz();
-    renderEmptyState();
+    resetExperience();
 
     modeTabs.forEach((button) => {
-      button.addEventListener("click", () => setMode(button.dataset.mode));
+      button.addEventListener("click", () => startMode(button.dataset.mode));
     });
 
     themeButtons.forEach((button) => {
@@ -1584,6 +1655,8 @@
       }
     });
 
+    document.querySelector("#restartButton").addEventListener("click", resetExperience);
+
     form.addEventListener("submit", (event) => {
       event.preventDefault();
       if (activeMode === "quiz") {
@@ -1607,6 +1680,18 @@
     });
 
     resultBody.addEventListener("click", (event) => {
+      const stepOption = event.target.closest("[data-step-option]");
+      if (stepOption && activeMode === "quiz") {
+        const question = quizQuestions[quizStep];
+        quizAnswers[question.id] = Number(stepOption.dataset.stepOption);
+        stepOption.setAttribute("aria-pressed", "true");
+        window.setTimeout(() => {
+          quizStep += 1;
+          renderQuizStep();
+        }, 180);
+        return;
+      }
+
       const arrow = event.target.closest(".carousel-arrow");
       if (arrow) {
         const direction = arrow.dataset.direction === "next" ? 1 : -1;
@@ -1645,7 +1730,19 @@
       }
     });
 
-    function initDateSelects() {
+    function initDateSelects(reset = false) {
+      if (reset) {
+        birthYear.innerHTML = "";
+        birthMonth.innerHTML = "";
+        birthDay.innerHTML = "";
+      }
+      if (birthYear.options.length) {
+        birthYear.value = "1997";
+        birthMonth.value = "9";
+        syncDays();
+        birthDay.value = "1";
+        return;
+      }
       const nowYear = new Date().getFullYear();
       for (let year = nowYear; year >= 1920; year -= 1) {
         birthYear.add(new Option(`${year} 年`, String(year)));
@@ -1674,10 +1771,100 @@
       modeTabs.forEach((button) => {
         button.setAttribute("aria-selected", String(button.dataset.mode === mode));
       });
+      homePanel.hidden = true;
+      form.hidden = false;
       birthModePanel.hidden = mode !== "birth";
-      quizModePanel.hidden = mode !== "quiz";
+      quizModePanel.hidden = true;
       resetButton.textContent = mode === "quiz" ? "清空答案" : "清空祈愿";
       submitButton.querySelector("span").textContent = mode === "quiz" ? "生成直觉推荐" : "生成今日推荐";
+    }
+
+    function startMode(mode) {
+      clearTimers();
+      activeMode = mode;
+      screenState = mode;
+      setMode(mode);
+      if (mode === "quiz") {
+        form.hidden = true;
+        quizStep = 0;
+        Object.keys(quizAnswers).forEach((key) => delete quizAnswers[key]);
+        renderQuizStep();
+      } else {
+        renderBirthIntro();
+      }
+    }
+
+    function resetExperience() {
+      clearTimers();
+      activeMode = null;
+      screenState = "home";
+      quizStep = 0;
+      carouselIndex = 0;
+      selectedThemes.clear();
+      Object.keys(quizAnswers).forEach((key) => delete quizAnswers[key]);
+      themeButtons.forEach((button) => button.setAttribute("aria-pressed", "false"));
+      document.querySelectorAll(".quiz-option").forEach((button) => button.setAttribute("aria-pressed", "false"));
+      modeTabs.forEach((button) => button.setAttribute("aria-selected", "false"));
+      homePanel.hidden = false;
+      form.hidden = true;
+      birthModePanel.hidden = true;
+      quizModePanel.hidden = true;
+      submitButton.disabled = false;
+      resetButton.textContent = "清空祈愿";
+      submitButton.querySelector("span").textContent = "生成今日推荐";
+      initDateSelects(true);
+      renderHomeState();
+    }
+
+    function renderBirthIntro() {
+      resultBody.innerHTML = `
+        <div class="empty-state">
+          <article class="empty-card">
+            <div class="empty-orb">${iconUse("icon-calendar")}</div>
+            <h2>填写生辰信息</h2>
+            <p>左侧选择出生年月日和今日祈愿后，系统会结合太阳星座、年份五行和水晶属性，生成 Top 3 推荐。</p>
+          </article>
+        </div>
+      `;
+    }
+
+    function renderHomeState() {
+      resultBody.innerHTML = `
+        <div class="empty-state">
+          <article class="empty-card">
+            <div class="empty-orb">${iconUse("icon-logo")}</div>
+            <h2>选择一种推荐方式</h2>
+            <p>从左侧选择“生辰推荐”或“直觉回答”。直觉回答会在这里一步一步出现问题，答完后自动生成水晶建议。</p>
+          </article>
+        </div>
+      `;
+    }
+
+    function renderQuizStep() {
+      const question = quizQuestions[quizStep];
+      if (!question) {
+        const profile = buildQuizProfile();
+        const recommendations = getTopCrystals(profile, profile.themes);
+        openReading(profile, profile.themes, recommendations);
+        return;
+      }
+      resultBody.innerHTML = `
+        <article class="quiz-step-card">
+          <div class="quiz-step-top">
+            <span>直觉回答</span>
+            <span>${quizStep + 1} / ${quizQuestions.length}</span>
+          </div>
+          <h2>${question.title}</h2>
+          <div class="quiz-options" role="group" aria-label="${question.title}">
+            ${question.options.map((option, optionIndex) => `
+              <button class="quiz-option" type="button" data-step-option="${optionIndex}">
+                ${option.label}
+              </button>
+            `).join("")}
+          </div>
+          <p class="hint">凭第一感觉选一个，选完会自动进入下一题。</p>
+        </article>
+      `;
     }
 
     function openMetricDialog(title, body) {
@@ -1864,7 +2051,10 @@
       clearTimers();
       submitButton.disabled = true;
       renderLoadingState();
-      typeText("正在推算命理五行，请稍候。系统正在把出生日期、星座气质与今日祈愿合并校准。", document.querySelector("#statusText"), 54);
+      typeText(profile.mode === "quiz"
+        ? "正在整理你的直觉回答，请稍候。系统正在把节奏、场景、印象与触感倾向合并校准。"
+        : "正在推算命理五行，请稍候。系统正在把出生日期、星座气质与今日祈愿合并校准。",
+        document.querySelector("#statusText"), 54);
       runProgress(5200, () => {
         submitButton.disabled = false;
         renderResult(profile, themes, recommendations);
